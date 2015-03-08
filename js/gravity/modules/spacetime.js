@@ -54,25 +54,21 @@ define([
 			objectA.deltaX = 0;
 			objectA.deltaY = 0;
 
-			// Loop through each objectB and apply its effects to objectA
-			// deltaX, deltaY store forces applied to the objects and they update at the end of the iteration
+			// Calculate forces applied to objects
 			for (var b = spacetime.length - 1; b >= 0; b--) {
 				if (b !== a) {
 					var objectB = spacetime[b];
+
 					var distance = Math.sqrt(Math.pow(objectA.x-objectB.x,2)+Math.pow(objectA.y-objectB.y,2));
-					
 					var angleToMass = Math.atan2(objectB.y-objectA.y, objectB.x-objectA.x);
-					// var angleToMass = Math.atan2(objectB.y, objectB.x) - Math.atan2(objectA.y, objectA.x);
-					// console.log(angleToMass);
 
 					objectA.deltaX += Math.cos(angleToMass) * (gravitationalConstant*objectB.mass/Math.pow(distance,2));
 					objectA.deltaY += Math.sin(angleToMass) * (gravitationalConstant*objectB.mass/Math.pow(distance,2));
-
-					// console.log(objectA.deltaX + ' ' + objectA.deltaY);
 				};
 			};
 		};
 
+		// Forces applied to objects
 		for (var i = spacetime.length - 1; i >= 0; i--) {
 			var object = spacetime[i];
 			
