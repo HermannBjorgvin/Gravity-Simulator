@@ -22,7 +22,7 @@ define([
 
 	var publicApi = {};
 
-	publicApi.configure = function(p_canvas){
+	publicApi.initialize = function(p_canvas){
 		canvas = p_canvas;
 	}
 
