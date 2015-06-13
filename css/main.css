@@ -63,8 +63,24 @@ textarea {
     background-color: #FFF;
 }
 
+.menu{
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 0.5em;
+    border-bottom-right-radius: 5px;
 
+    background-color: rgba(0, 0, 0, 0.3);
 
+}
+
+.menu h4{
+    margin: 0;
+}
+
+.menu #menu-mass-multiplier{
+    width: 3em;
+}
 
 
 

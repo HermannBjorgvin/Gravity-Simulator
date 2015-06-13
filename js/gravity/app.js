@@ -14,13 +14,15 @@ define([
 	gravity.initialize = function(canvasID){
 		var canvas = document.getElementById(canvasID);
 		var ctx = canvas.getContext('2d');
+		var massMultiplier = 200;
 		
-		// Make the canvas fill the screen
+		// Initialize the canvas utility, includes features such as autoresize
 		canvasUtil.initialize(canvas);
 		canvasUtil.autoResize();
 
-		// Create spacetime simulation
-		spacetime.initialize();
+		// Initialize spacetime simulation
+		spacetime.initialize(massMultiplier);
+		spacetime.startLoop();
 
 		var earthToMoonDiameter = 0.012;
 
@@ -129,17 +131,17 @@ define([
 			density: 0.4
 		});*/
 	
-		/*var spacing = 40;
+		/*var spacing = 60;
 		for (var i = Math.ceil(canvas.width/spacing) - 1; i >= 0; i--) {
 			for (var z = Math.ceil(canvas.height/spacing) - 1; z >= 0; z--) {
 				spacetime.addObject({
 					x: i*spacing,
 					y: z*spacing,
-					velX: Math.random() * 0.2 - 0.1,
-					velY: Math.random() * 0.2 - 0.1,
+					velX: Math.random() * 2 - 1,
+					velY: Math.random() * 2 - 1,
 					deltaX: 0,
 					deltaY: 0,
-					mass: 0.01,
+					mass: 0.1,
 					density: 1
 				});
 			};
@@ -147,17 +149,13 @@ define([
 
 		// console.log(Math.ceil(canvas.width/spacing) * Math.ceil(canvas.height/spacing))
 
-		spacetime.startLoop();
-		// spacetime.calculateForces();
 
-		// renderer
-		render.initialize(canvas, spacetime);
-		/*setInterval(function(){
-			render.renderFrame(spacetime.getSpace());
-		}, 1000/5);*/
+		// Initialize render module
+		render.initialize(canvas, spacetime, massMultiplier);
 		render.startLoop();
 
-		gui.initialize(spacetime, render, canvas);
+		// Initialize GUI
+		gui.initialize(spacetime, render, canvas, massMultiplier);
 	}
 
 	return gravity;

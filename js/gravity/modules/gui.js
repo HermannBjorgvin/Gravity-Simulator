@@ -10,10 +10,10 @@ define([
 		Private
 	**************/
 
-	var spacetime = undefined;
-	var render = undefined;
-	var canvas = undefined;
-	var objectSizeMultiplier = 30; // How exagurated the size of the objects are (humans like that)
+	var spacetime      = undefined;
+	var render 		   = undefined;
+	var canvas 		   = undefined;
+	var massMultiplier = undefined; // How exagurated the size of the objects are (humans like that)
 
 	// Function that controls the left mouse which controls the massbuilder
 	/*
@@ -59,7 +59,7 @@ define([
 						y: -render.getCamera().y + mouse.y2,
 						velX: -(mouse.x - mouse.x2) / 100,
 						velY: -(mouse.y - mouse.y2) / 100,
-						mass: (4/3*Math.PI*Math.pow(mouse.radius,3)) /objectSizeMultiplier,
+						mass: (4/3*Math.PI) * Math.pow(mouse.radius, 3) / massMultiplier,
 						density: 1
 					});
 
@@ -89,10 +89,22 @@ define([
 
 	var guiApi = {};
 
-	guiApi.initialize = function(p_spacetime, p_render, p_canvas){
+	guiApi.initialize = function(p_spacetime, p_render, p_canvas, p_massMultiplier){
 		spacetime = p_spacetime;
 		render = p_render;
 		canvas = p_canvas;
+		massMultiplier = p_massMultiplier;
+
+		document.getElementById('menu-toggle-grid').addEventListener('change', function(){
+			render.toggleGrid();
+		})
+
+		var massMultiplierInput = document.getElementById('menu-mass-multiplier');
+		massMultiplierInput.addEventListener('change', function(){
+			massMultiplier = massMultiplierInput.value;
+			render.updateMassMultiplier(massMultiplierInput.value);
+			spacetime.updateMassMultiplier(massMultiplierInput.value);
+		});
 
 		canvas.onmousedown = function(e){
 			if (e.which === 1) {

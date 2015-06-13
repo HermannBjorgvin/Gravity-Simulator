@@ -14,7 +14,7 @@ define([
 	// Simulation settings
 	var calculationsPerSec = 100; // How many gravitational calculations are performed a second
 	var calculationSpeed = 1; // Speed comes at the cost of accuracy
-	var objectSizeMultiplier = 30; // How exagurated the size of the objects are (humans like that)
+	var massMultiplier = undefined; // How exagurated the size of the objects are (humans like that)
 
 	var spacetimeLoop; // Variable that stores our setInterval loop
 
@@ -25,16 +25,23 @@ define([
 	}
 
 	function getMomentum(object){
-		var velocity = Math.sqrt(Math.pow(object.velX, 2)+Math.pow(object.velY, 2));
+		var velocity = getVelocity(object);
 
 		return velocity * object.mass;
 	}
 
+	// WRONG MATH DON'T USE
 	function getRelativeMomentum(objectA, objectB){
-		var relative = Math.sqrt(Math.pow(objectA.velX - objectB.velX, 2)+Math.pow(objectA.velY - objectB.velY, 2));
+		// WRONG MATH DON'T USE
+		var relative = Math.sqrt(
+			Math.pow(objectA.velX - objectB.velX, 2)+
+			Math.pow(objectA.velY - objectB.velY, 2)
+		);
 
+		// WRONG MATH DON'T USE
 		return relative;
 	}
+    // END OF WRONG MATH... hopefully
 
 	function pythagoras(objectA, objectB){
 		var distance = Math.sqrt(Math.pow(objectA.x - objectB.x, 2)+Math.pow(objectA.y - objectB.y, 2));
@@ -43,7 +50,7 @@ define([
 	}
 
 	function getObjectRadius(object){
-		return Math.pow(3*(object.mass*object.density*objectSizeMultiplier/4*Math.PI), (1/3));
+		return Math.cbrt(object.mass*object.density*massMultiplier / 4/3*Math.PI);
 	}
 
 	/*************
@@ -52,10 +59,14 @@ define([
 
 	var spacetimeApi = {};
 
-	spacetimeApi.initialize = function(){
-
+	spacetimeApi.initialize = function(p_massMultiplier){
+		massMultiplier = p_massMultiplier;
 	}
 
+	spacetimeApi.updateMassMultiplier = function(p_massMultiplier){
+		massMultiplier = p_massMultiplier;
+	}
+	
 	spacetimeApi.addObject = function(object){
 		spacetime.push(object);
 	}
