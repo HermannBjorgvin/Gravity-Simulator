@@ -12,7 +12,7 @@ define([
 	var spacetime = []; // If this were real life we'd just call this variable "the universe"
 
 	// Simulation settings
-	var calculationsPerSec = 100; // How many gravitational calculations are performed a second
+	var calculationsPerSec = 50; // How many gravitational calculations are performed a second
 	var calculationSpeed = 1; // Speed comes at the cost of accuracy
 	var massMultiplier = undefined; // How exagurated the size of the objects are (humans like that)
 
@@ -30,7 +30,7 @@ define([
 		return velocity * object.mass;
 	}
 
-	// WRONG MATH DON'T USE
+	// WRONG MATH DON'T USE, also just throw this function away, I currently have no use for it
 	function getRelativeMomentum(objectA, objectB){
 		// WRONG MATH DON'T USE
 		var relative = Math.sqrt(
@@ -144,8 +144,13 @@ define([
 							deltaX:0, // useless info
 							deltaY:0, // useless info
 							mass: newMass, 
-							density: newDensity
-						}
+							density: newDensity,
+							path: []
+						};
+
+						// Give the new object the larger objects previous path, looks nicer
+						var newPath = objectA.mass >= objectB.mass ? objectA.path : objectB.path;
+						newObject.path = newPath;
 
 						spacetime.push(newObject);
 					};
@@ -187,9 +192,20 @@ define([
 			};
 		};
 
-		// Forces applied to objects
+		// Apply changes to objects for this iteration
 		for (var i = spacetime.length - 1; i >= 0; i--) {
 			var object = spacetime[i];
+
+			// add coords to object path
+			object.path.push({
+				x: object.x,
+				y: object.y
+			});
+
+			// Limit path length
+			if (object.path.length > Math.min(40, 100/Math.pow(getVelocity(object),2))) {
+				object.path.splice(0, 1);
+			};
 			
 			object.velX += object.deltaX * calculationSpeed;
 			object.velY += object.deltaY * calculationSpeed;

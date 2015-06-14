@@ -58,22 +58,50 @@ define(['jquery', 'underscore'], function($, _){
 	}
 
 	var renderObject = function(object){
+
+		// Draw object path
+		if (object.path.length > 3)
+		{
+			ctx.beginPath();
+			ctx.moveTo(object.path[0].x + camera.x, object.path[0].y + camera.y);
+
+			for (i = 1; i < object.path.length - 2; i ++)
+			{
+				var xc = (object.path[i].x + object.path[i + 1].x) / 2;
+				var yc = (object.path[i].y + object.path[i + 1].y) / 2;
+
+				ctx.quadraticCurveTo(
+					object.path[i].x + camera.x,
+					object.path[i].y + camera.y,
+					xc + camera.x,
+					yc + camera.y
+				);
+			}
+			// curve through the last two points
+			ctx.quadraticCurveTo(
+				object.path[object.path.length-2].x + camera.x,
+				object.path[object.path.length-2].y + camera.y,
+				object.path[object.path.length-1].x + camera.x,
+				object.path[object.path.length-1].y + camera.y
+			);
+
+			ctx.strokeStyle = "#666";
+			ctx.stroke();
+		};
+
+		// Draw actual object
+
 		// Formula for radius from volume
 		var radius = Math.cbrt(object.mass*object.density*massMultiplier / 4/3*Math.PI);
 
 		ctx.beginPath();
 		ctx.arc(object.x + camera.x, object.y + camera.y, radius, 0, 2 * Math.PI, false);
-		ctx.fillStyle = '#777';
+		ctx.strokeStyle = "#666";
+		ctx.fillStyle = "#000";
 		if (object.cameraFocus === true) {
-			ctx.fillStyle = '#C88';
+			ctx.fillStyle = '#40A2BF';
 		};
 		ctx.fill();
-		/*if (object.cameraFocus === true) {
-			ctx.arc(object.x + camera.x, object.y + camera.y, radius + 2., 0, 2 * Math.PI, false);
-			ctx.lineWidth = 1;
-			ctx.strokeStyle = '#C88';
-			ctx.stroke();
-		};*/
 	}
 
 	var renderMouse = function(){

@@ -60,7 +60,8 @@ define([
 						velX: -(mouse.x - mouse.x2) / 100,
 						velY: -(mouse.y - mouse.y2) / 100,
 						mass: (4/3*Math.PI) * Math.pow(mouse.radius, 3) / massMultiplier,
-						density: 1
+						density: 1,
+						path: []
 					});
 
 					// Reset state machine
