@@ -55,8 +55,8 @@ define([
 
 				if (e.type === 'mousedown') {
 					spacetime.addObject({
-						x: -render.getCamera().x + mouse.x2,
-						y: -render.getCamera().y + mouse.y2,
+						x: render.getCamera().getMouseX(mouse.x2),
+						y: render.getCamera().getMouseY(mouse.y2),
 						velX: -(mouse.x - mouse.x2) / 100,
 						velY: -(mouse.y - mouse.y2) / 100,
 						mass: (4/3*Math.PI) * Math.pow(mouse.radius, 3) / massMultiplier,
@@ -98,13 +98,18 @@ define([
 
 		document.getElementById('menu-toggle-grid').addEventListener('change', function(){
 			render.toggleGrid();
-		})
+		});
 
 		var massMultiplierInput = document.getElementById('menu-mass-multiplier');
 		massMultiplierInput.addEventListener('change', function(){
 			massMultiplier = massMultiplierInput.value;
 			render.updateMassMultiplier(massMultiplierInput.value);
 			spacetime.updateMassMultiplier(massMultiplierInput.value);
+		});
+
+		var zoomInput = document.getElementById('menu-zoom');
+		zoomInput.addEventListener('change', function(){
+			render.changeZoom(zoomInput.value);
 		});
 
 		canvas.onmousedown = function(e){

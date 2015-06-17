@@ -12,7 +12,7 @@ define([
 	var spacetime = []; // If this were real life we'd just call this variable "the universe"
 
 	// Simulation settings
-	var calculationsPerSec = 50; // How many gravitational calculations are performed a second
+	var calculationsPerSec = 100; // How many gravitational calculations are performed a second
 	var calculationSpeed = 1; // Speed comes at the cost of accuracy
 	var massMultiplier = undefined; // How exagurated the size of the objects are (humans like that)
 
@@ -44,34 +44,39 @@ define([
     // END OF WRONG MATH... hopefully
 
 	function pythagoras(objectA, objectB){
-		var distance = Math.sqrt(Math.pow(objectA.x - objectB.x, 2)+Math.pow(objectA.y - objectB.y, 2));
+		var distance = Math.sqrt(
+			Math.pow(objectA.x - objectB.x, 2) +
+			Math.pow(objectA.y - objectB.y, 2)
+		);
 
 		return distance;
 	}
 
 	function getObjectRadius(object){
-		return Math.cbrt(object.mass*object.density*massMultiplier / 4/3*Math.PI);
+		var radius = Math.cbrt(object.mass*object.density*massMultiplier / 4/3*Math.PI);
+		
+		return radius;
 	}
 
 	/*************
 		Public
 	*************/
 
-	var spacetimeApi = {};
+	var api = {};
 
-	spacetimeApi.initialize = function(p_massMultiplier){
+	api.initialize = function(p_massMultiplier){
 		massMultiplier = p_massMultiplier;
 	}
 
-	spacetimeApi.updateMassMultiplier = function(p_massMultiplier){
+	api.updateMassMultiplier = function(p_massMultiplier){
 		massMultiplier = p_massMultiplier;
 	}
 	
-	spacetimeApi.addObject = function(object){
+	api.addObject = function(object){
 		spacetime.push(object);
 	}
 
-	spacetimeApi.startLoop = function(){
+	api.startLoop = function(){
 		var self = this;
 
 		spacetimeLoop = setInterval(function(){
@@ -79,15 +84,15 @@ define([
 		}, 1000/calculationsPerSec);
 	}
 
-	spacetimeApi.stopLoop = function(){
+	api.stopLoop = function(){
 		clearInterval(spacetimeLoop);
 	}
 
-	spacetimeApi.getSpace = function(){
+	api.getSpace = function(){
 		return spacetime;
 	}
 
-	spacetimeApi.calculateForces = function(){
+	api.calculateForces = function(){
 		var self = this;
 
 		/*
@@ -108,6 +113,7 @@ define([
 		*/
 
 		// Find clustering objects and join them - unfinished
+		// THIS IS CURRENTLY PHYSICALLY INNACCURATE, WILL FIX SOON
 		for (var a = spacetime.length - 1; a >= 0; a--) {
 			var objectA = spacetime[a];
 
@@ -203,7 +209,7 @@ define([
 			});
 
 			// Limit path length
-			if (object.path.length > Math.min(40, 100/Math.pow(getVelocity(object),2))) {
+			if (object.path.length > getObjectRadius(object) * 20 / getVelocity(object)) {
 				object.path.splice(0, 1);
 			};
 			
@@ -219,6 +225,6 @@ define([
 		spacetime = spacetimeNextVelocity;
 	}
 
-	return spacetimeApi;
+	return api;
 
 });
