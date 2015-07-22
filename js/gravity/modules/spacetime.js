@@ -175,7 +175,7 @@ define([
 
 						var newObject = {
 							cameraFocus: camFocus,
-							x: objectA.x*getMomentum(objectA)/newMomentum + objectB.x*getMomentum(objectB)/newMomentum, // Change later
+							x: objectA.x*objectA.mass/newMass + objectB.x*objectB.mass/newMass, // Change later
 							y: objectA.y*getMomentum(objectA)/newMomentum + objectB.y*getMomentum(objectB)/newMomentum, // Change later
 							velX: objectA.velX*objectA.mass/newMass + objectB.velX*objectB.mass/newMass, // Change later
 							velY: objectA.velY*objectA.mass/newMass + objectB.velY*objectB.mass/newMass, // Change later
