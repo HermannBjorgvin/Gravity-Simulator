@@ -23,7 +23,7 @@ define(['jquery', 'underscore'], function($, _){
 			var x = (p_x*this.zoom - this.x*this.zoom);
 
 			// Push everything to center
-			x += canvas.width/2;
+			// x += canvas.width/2;
 
 			return x;
 		},
@@ -31,23 +31,23 @@ define(['jquery', 'underscore'], function($, _){
 			var y = (p_y*this.zoom - this.y*this.zoom);
 
 			// Push everything to center
-			y += canvas.height/2;
+			// y += canvas.height/2;
 
 			return y;
 		},
 		getMouseX: function(p_x){
-			var x = p_x*this.zoom + this.x/this.zoom;
+			var x = this.x + p_x/this.zoom;
 
 			// Push everything to center
-			x -= canvas.width/2;
+			// x -= canvas.width/this.zoom/2;
 
 			return x;
 		},
 		getMouseY: function(p_y){
-			var y = p_y*this.zoom + this.y/this.zoom;
+			var y = this.y + p_y/this.zoom;
 
 			// Push everything to center
-			y -= canvas.height/2;
+			// y -= canvas.height/this.zoom/2;
 
 			return y;
 		}
@@ -83,8 +83,8 @@ define(['jquery', 'underscore'], function($, _){
 		for (var i = l_spacetime.length - 1; i >= 0; i--) {
 			var object = l_spacetime[i]
 			if (object.cameraFocus == true) {
-				camera.x = object.x;
-				camera.y = object.y;
+				camera.x = object.x - canvas.width/2/camera.zoom;
+				camera.y = object.y - canvas.height/2/camera.zoom;
 			};
 		};
 	}
@@ -267,7 +267,7 @@ define(['jquery', 'underscore'], function($, _){
 	api.changeZoom = function(p_zoom){
 		camera.zoom = p_zoom;
 	}
-
+	
 	api.setMouse = function(p_mouse){
 		mouse = p_mouse;
 	}

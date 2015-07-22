@@ -90,7 +90,7 @@ define([
 				path: []
 			});
 
-			for (var i = 100; i >= 0; i--) {
+			for (var i = 10; i >= 0; i--) {
 				var rad = Math.PI * 2 * Math.random();
 				var dist = 50 + 70 * Math.random();
 

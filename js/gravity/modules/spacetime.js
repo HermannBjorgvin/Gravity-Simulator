@@ -68,12 +68,44 @@ define([
 		massMultiplier = p_massMultiplier;
 	}
 
+	api.calculationsPerSec = function(number){
+		calculationsPerSec = number;
+	}
+
+	api.calculationSpeed = function(number){
+		calculationSpeed = number;
+	}
+
 	api.updateMassMultiplier = function(p_massMultiplier){
 		massMultiplier = p_massMultiplier;
 	}
 	
 	api.addObject = function(object){
 		spacetime.push(object);
+	}
+
+	api.clearSpacetime = function(){
+		spacetime = [];
+	}
+
+	api.cycleFocus = function(){
+		var objectFound = false;
+
+		for (var i = 0; i < spacetime.length; i++) {
+			if(spacetime[i].cameraFocus !== undefined && spacetime[i].cameraFocus === true){
+				
+				spacetime[i].cameraFocus = false;
+				spacetime[((i+1)%spacetime.length)].cameraFocus = true;
+
+				objectFound = true;
+
+				break;
+			}
+		};
+
+		if (objectFound !== true && spacetime.length > 0) {
+			spacetime[0].cameraFocus = true;
+		};
 	}
 
 	api.startLoop = function(){
@@ -166,8 +198,6 @@ define([
 
 		///////////////////////////////////////////////////////////////////////////////////////////
 
-		var spacetimeNextVelocity = []; // calculate velocity
-
 		// Updates the universe and shit
 		for (var a = spacetime.length - 1; a >= 0; a--) {
 			var objectA = spacetime[a];
@@ -199,7 +229,7 @@ define([
 		};
 
 		// Apply changes to objects for this iteration
-		for (var i = spacetime.length - 1; i >= 0; i--) {
+		for (var i = 0; i < spacetime.length; i++) {
 			var object = spacetime[i];
 
 			// add coords to object path
@@ -218,11 +248,7 @@ define([
 			
 			object.x += object.velX * calculationSpeed;
 			object.y += object.velY * calculationSpeed;
-
-			spacetimeNextVelocity.push(object);
 		};
-
-		spacetime = spacetimeNextVelocity;
 	}
 
 	return api;

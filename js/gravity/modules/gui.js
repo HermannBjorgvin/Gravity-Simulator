@@ -54,6 +54,8 @@ define([
 				// This state ^
 
 				if (e.type === 'mousedown') {
+					mouse.radius /= render.getCamera().zoom;
+
 					spacetime.addObject({
 						x: render.getCamera().getMouseX(mouse.x2),
 						y: render.getCamera().getMouseY(mouse.y2),
@@ -95,12 +97,14 @@ define([
 		render = p_render;
 		canvas = p_canvas;
 		massMultiplier = p_massMultiplier;
-
+		
+		document.getElementById('menu-toggle-grid').checked = 1;
 		document.getElementById('menu-toggle-grid').addEventListener('change', function(){
 			render.toggleGrid();
 		});
 
 		var massMultiplierInput = document.getElementById('menu-mass-multiplier');
+		massMultiplierInput.value = 200;
 		massMultiplierInput.addEventListener('change', function(){
 			massMultiplier = massMultiplierInput.value;
 			render.updateMassMultiplier(massMultiplierInput.value);
@@ -108,9 +112,27 @@ define([
 		});
 
 		var zoomInput = document.getElementById('menu-zoom');
+		zoomInput.value = 1;
 		zoomInput.addEventListener('change', function(){
 			render.changeZoom(zoomInput.value);
 		});
+
+		var speedInput = document.getElementById('menu-speed');
+		speedInput.value = 1;
+		speedInput.addEventListener('change', function(){
+			spacetime.calculationSpeed(speedInput.value);
+		});
+
+		var clearspacebtn = document.getElementById('menu-clear-spacetime');
+		clearspacebtn.addEventListener('click', function(){
+			spacetime.clearSpacetime();
+		});
+
+		var cyclefocusbtn = document.getElementById('menu-cycle-focus');
+		cyclefocusbtn.addEventListener('click', function(){
+			spacetime.cycleFocus();
+		});
+
 
 		canvas.onmousedown = function(e){
 			if (e.which === 1) {
