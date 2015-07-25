@@ -11,8 +11,8 @@ define([
 
 	var app = {};
 
-	app.initialize = function(canvasID){
-		var canvas = document.getElementById(canvasID);
+	app.initialize = function(canvasId){
+		var canvas = document.getElementById(canvasId);
 		var ctx = canvas.getContext('2d');
 		var massMultiplier = 200;
 		
@@ -39,8 +39,8 @@ define([
 				y: 200,
 				velX: 0,
 				velY: 0,
-				deltaX: 0,
-				deltaY: 0,
+				deltaVelX: 0,
+				deltaVelY: 0,
 				mass: 500,
 				density: 0.3,
 				path: []
@@ -50,8 +50,8 @@ define([
 				y: 200,
 				velX: 0,
 				velY: Math.sqrt(500/30),
-				deltaX: 0,
-				deltaY: 0,
+				deltaVelX: 0,
+				deltaVelY: 0,
 				mass: 0.5,
 				density: 1,
 				path: []
@@ -61,8 +61,8 @@ define([
 				y: 200,
 				velX: 0,
 				velY: -Math.sqrt(500/200),
-				deltaX: 0,
-				deltaY: 0,
+				deltaVelX: 0,
+				deltaVelY: 0,
 				mass: 3,
 				density: 1,
 				path: []
@@ -72,8 +72,8 @@ define([
 				y: 200,
 				velX: 0,
 				velY: Math.sqrt(500/350),
-				deltaX: 0,
-				deltaY: 0,
+				deltaVelX: 0,
+				deltaVelY: 0,
 				mass: 6,
 				density: 0.6,
 				path: []
@@ -83,8 +83,8 @@ define([
 				y: 200,
 				velX: 0,
 				velY: Math.sqrt(500/350) + Math.sqrt(6/20),
-				deltaX: 0,
-				deltaY: 0,
+				deltaVelX: 0,
+				deltaVelY: 0,
 				mass: 0.1,
 				density: 1,
 				path: []
@@ -102,8 +102,8 @@ define([
 					y: y,
 					velX: Math.cos(rad + Math.PI/2+(Math.PI/180*6-Math.PI/180*12)*0) * Math.sqrt(500/dist),
 					velY: Math.sin(rad + Math.PI/2+(Math.PI/180*6-Math.PI/180*12)*0) * Math.sqrt(500/dist),
-					deltaX: 0,
-					deltaY: 0,
+					deltaVelX: 0,
+					deltaVelY: 0,
 					mass: 0.0025,
 					density: 4,
 					path: []
@@ -118,8 +118,8 @@ define([
 			y: 0,
 			velX: 0,
 			velY: 0,
-			deltaX: 0,
-			deltaY: 0,
+			deltaVelX: 0,
+			deltaVelY: 0,
 			mass: starmass,
 			density: 0.0001,
 			path: []
@@ -145,8 +145,8 @@ define([
 				y: y,
 				velX: Math.cos(radian + Math.PI/2 + (Math.PI/180*0.5 - Math.PI/180*1)) * Math.sqrt(1.55/distance) * speedRand,
 				velY: Math.sin(radian + Math.PI/2 + (Math.PI/180*0.5 - Math.PI/180*1)) * Math.sqrt(1.55/distance) * speedRand,
-				deltaX: 0,
-				deltaY: 0,
+				deltaVelX: 0,
+				deltaVelY: 0,
 				mass: 0.0125,
 				density: 1,
 				path: []

@@ -1,4 +1,4 @@
-// render
+// modules/render
 
 define(['jquery', 'underscore'], function($, _){
 	
@@ -22,32 +22,20 @@ define(['jquery', 'underscore'], function($, _){
 		getX: function(p_x){
 			var x = (p_x*this.zoom - this.x*this.zoom);
 
-			// Push everything to center
-			// x += canvas.width/2;
-
 			return x;
 		},
 		getY: function(p_y){
 			var y = (p_y*this.zoom - this.y*this.zoom);
-
-			// Push everything to center
-			// y += canvas.height/2;
 
 			return y;
 		},
 		getMouseX: function(p_x){
 			var x = this.x + p_x/this.zoom;
 
-			// Push everything to center
-			// x -= canvas.width/this.zoom/2;
-
 			return x;
 		},
 		getMouseY: function(p_y){
 			var y = this.y + p_y/this.zoom;
-
-			// Push everything to center
-			// y -= canvas.height/this.zoom/2;
 
 			return y;
 		}
