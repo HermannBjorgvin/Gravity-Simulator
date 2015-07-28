@@ -6,8 +6,9 @@ define([
 	'utility/canvasUtil',
 	'modules/render',
 	'modules/spacetime',
-	'modules/gui'
-], function($, _, canvasUtil, render, spacetime, gui){
+	'modules/gui',
+	'modules/barnes-hut'
+], function($, _, canvasUtil, render, spacetime, gui, barnesHut){
 
 	var app = {};
 
@@ -18,10 +19,13 @@ define([
 		
 		// Initialize the canvas utility, includes features such as autoresize
 		canvasUtil.initialize(canvas);
-		canvasUtil.autoResize();
+		// canvasUtil.autoResize();
+
+		// Barnes-hut
+		barnesHut.initialize(canvas);
 
 		// Initialize spacetime simulation
-		spacetime.initialize(massMultiplier);
+		/*spacetime.initialize(massMultiplier);
 		spacetime.startLoop();
 
 		// Initialize render module
@@ -109,50 +113,7 @@ define([
 					path: []
 				});
 			};
-		})();
-
-		// asteroid belt around a center star
-		// var starmass = 10000;
-		/*var blackhole = spacetime.addObject({
-			x: 0,
-			y: 0,
-			velX: 0,
-			velY: 0,
-			deltaVelX: 0,
-			deltaVelY: 0,
-			mass: starmass,
-			density: 0.0001,
-			path: []
-		});*/
-
-		/*for (var i = 0; i < 1000; i++) {
-			var radian = Math.random() * 2 * Math.PI;
-
-			var height = canvas.height;
-			var width = canvas.width;
-
-			// var distance = Math.sqrt(Math.pow(370, 2) * Math.random()) + 30; // Distributed
-			var distance = Math.random()*370; // Favorable to cluster near center
-
-			var x = Math.cos(radian)*distance;
-			var y = Math.sin(radian)*distance;
-
-			var beltSpeed = 0.125;
-			var speedRand = Math.random() * 0.01 + 0.995
-
-			spacetime.addObject({
-				x: x,
-				y: y,
-				velX: Math.cos(radian + Math.PI/2 + (Math.PI/180*0.5 - Math.PI/180*1)) * Math.sqrt(1.55/distance) * speedRand,
-				velY: Math.sin(radian + Math.PI/2 + (Math.PI/180*0.5 - Math.PI/180*1)) * Math.sqrt(1.55/distance) * speedRand,
-				deltaVelX: 0,
-				deltaVelY: 0,
-				mass: 0.0125,
-				density: 1,
-				path: []
-			});
-		};*/
-
+		})();*/
 	}
 
 	return app;

@@ -57,10 +57,12 @@ textarea {
    ========================================================================== */
 
 #gravity{
-    width: 100vw;
-    height: 100vh;
+    display: block;
+    /*width: 100vw;*/
+    /*height: 100vh;*/
+    margin: 1em auto;
 
-    background-color: #FFF;
+    background-color: #EEE;
 }
 
 .menu{
