@@ -51,53 +51,55 @@ textarea {
     padding: 0.2em 0;
 }
 
-
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
 
-#gravity{
+#gravity {
     width: 100vw;
     height: 100vh;
 
     background-color: #FFF;
 }
 
-.menu{
+.menu {
     position: fixed;
     left: 0;
     top: 0;
     padding: 0.5em;
     border-bottom-right-radius: 5px;
-
     background-color: rgba(0, 0, 0, 0.3);
-
 }
 
-.menu h4{
+.menu-realistic-mode {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+    text-shadow: -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+.menu-realistic-mode input, .menu-realistic-mode button{
+    background: #000;
+    border-color: #CCC;
+}
+
+.menu h4 {
     margin: 0;
 }
 
-.menu #menu-mass-multiplier{
+.menu #menu-mass-multiplier {
     width: 3em;
 }
 
-.menu #menu-zoom{
+.menu #menu-zoom {
     width: 3em;
 }
 
-.menu #menu-speed{
+.menu #menu-speed {
     width: 3em;
 }
-
-
-
-
-
-
-
-
-
 
 /* ==========================================================================
    Media Queries
@@ -108,9 +110,9 @@ textarea {
 }
 
 @media print,
-       (-o-min-device-pixel-ratio: 5/4),
-       (-webkit-min-device-pixel-ratio: 1.25),
-       (min-resolution: 120dpi) {
+(-o-min-device-pixel-ratio: 5/4),
+(-webkit-min-device-pixel-ratio: 1.25),
+(min-resolution: 120dpi) {
 
 }
 
