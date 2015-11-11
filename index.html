@@ -1,39 +1,50 @@
 <!doctype html>
 <html class="no-js" lang="">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Gravity</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Gravity</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="css/normalize.min.css">
-        <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/normalize.min.css">
+    <link rel="stylesheet" href="css/main.css">
 
-        <script src="js/vendor/modernizr-2.8.3.min.js"></script>
-    </head>
-    <body>
+    <script src="js/vendor/modernizr-2.8.3.min.js"></script>
+</head>
+<body>
 
-        <canvas id='gravity'></canvas>
-        <div class="menu">
-            <h4>Funk things up with the settings menu!</h4>
-            <label><input type="checkbox" id="menu-toggle-grid" checked="checked"> Show grid</label><br>
-            <label><input type="number" id="menu-mass-multiplier" value="200"> Exaggerate mass</label><br>
-            <label><input type="number" id="menu-zoom" value="1" min="0.1" step="0.1"> Camera zoom</label><br>
-            <label><input type="number" id="menu-speed" value="1" step="0.1"> Calculation speed</label><br>
-            <button id="menu-clear-spacetime">clear spacetime</button><br>
-            <button id="menu-cycle-focus">cycle object focus</button>
-        </div>
+<canvas id='gravity'></canvas>
+<img id="realistic-background" src="img/background.jpg" style="display:none;">
 
-        <script src="js/vendor/require.js" data-main="js/gravity/main.js"></script>
-        <script>
-          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+<div id="main-menu" class="menu">
+    <h4>Funk things up with the settings menu!</h4>
+    <label><input type="checkbox" id="menu-toggle-realistic-ui-mode"> Show realistic UI (Space background, objects as planets, etc...)</label><br>
+    <label><input type="checkbox" id="menu-toggle-grid" checked="checked"> Show grid</label><br>
+    <label><input type="number" id="menu-mass-multiplier" value="200"> Exaggerate mass</label><br>
+    <label><input type="number" id="menu-zoom" value="1" min="0.1" step="0.1"> Camera zoom</label><br>
+    <label><input type="number" id="menu-speed" value="1" step="0.1"> Calculation speed</label><br>
+    <button id="menu-clear-spacetime">clear spacetime</button>
+    <br>
+    <button id="menu-cycle-focus">cycle object focus</button>
+</div>
 
-          ga('create', 'UA-40622926-5', 'auto');
-          ga('send', 'pageview');
-        </script>
-    </body>
+<script src="js/vendor/require.js" data-main="js/gravity/main.js"></script>
+<script>
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-40622926-5', 'auto');
+    ga('send', 'pageview');
+</script>
+</body>
 </html>

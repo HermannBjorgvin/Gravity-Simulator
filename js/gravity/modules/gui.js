@@ -13,9 +13,9 @@ define([
     var spacetime = undefined;
     var render = undefined;
     var canvas = undefined;
-    var massMultiplier = undefined; // How exagurated the size of the objects are (humans like that)
+    var massMultiplier = undefined; // How exaggerated the size of the objects are (humans like that)
 
-    // Function that controls the left mouse which controls the massbuilder
+    // Function that controls the left mouse which controls the mass builder
     /*
      States:
      placement
@@ -101,9 +101,27 @@ define([
         canvas = p_canvas;
         massMultiplier = p_massMultiplier;
 
-        document.getElementById('menu-toggle-grid').checked = 1;
-        document.getElementById('menu-toggle-grid').addEventListener('change', function () {
+        var menu = document.getElementById('main-menu');
+
+        var menuToggleGrid = document.getElementById('menu-toggle-grid');
+        menuToggleGrid.checked = true;
+        menuToggleGrid.addEventListener('change', function () {
             render.toggleGrid();
+        });
+
+        var menuToggleRealisticUiMode = document.getElementById('menu-toggle-realistic-ui-mode');
+        menuToggleRealisticUiMode.checked = false;
+        menuToggleRealisticUiMode.addEventListener('change', function () {
+
+            switch (menuToggleRealisticUiMode.checked) {
+                case true:
+                    menu.className = "menu menu-realistic-mode";
+                    break;
+                case false:
+                    menu.className = "menu";
+                    break;
+            }
+            render.toggleRealisticUiMode();
         });
 
         var massMultiplierInput = document.getElementById('menu-mass-multiplier');
