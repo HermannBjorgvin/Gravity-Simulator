@@ -135,7 +135,20 @@ define(['jquery', 'underscore'], function ($, _) {
 
             ctx.strokeStyle = "#666";
             ctx.fillStyle = "#000";
+
             if (object.cameraFocus === true) ctx.fillStyle = '#40A2BF';
+            if (settings.realisticUiMode === true) {
+                switch (object.cameraFocus) {
+                    case true:
+                        ctx.fillStyle = '#FFEE00';
+                        break;
+                    case false:
+                        ctx.fillStyle = '#FFF';
+                        break;
+                }
+
+
+            }
             ctx.fill();
         })();
     }
@@ -215,14 +228,13 @@ define(['jquery', 'underscore'], function ($, _) {
         clearCanvas();
         centerCamera();
 
-        if (settings.showGrid === true) {
-            renderGrid();
-        }
-
         if (settings.realisticUiMode === true) {
             renderBackgroundImage();
         }
 
+        if (settings.showGrid === true) {
+            renderGrid();
+        }
         for (var i = spacetime.length - 1; i >= 0; i--) {
             renderObject(spacetime[i]);
         }
