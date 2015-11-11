@@ -148,6 +148,9 @@ define([
                 massBuilder(e);
             }
             else if (e.which === 3) {
+                //I think there is no need to the user right click
+                //in here. It can confuse the user.
+                return false;
                 // console.log('right mouse click');
             }
         }, false);
@@ -158,7 +161,7 @@ define([
         }, false);
 
 
-        //The following
+        //The following adds support to control the camera zoom with mouse wheel
         canvas.addEventListener('mousewheel', function (event) {
             // cross-browser wheel delta
             var e = window.event || event; // old IE support
@@ -168,12 +171,8 @@ define([
             if (zoomValue <= 0) {
                 zoomValue = 0.1; //Minimum zoom value
             }
-            //console.log(zoomValue);
-            //console.log(delta);
             zoomInput.value = zoomValue;
             render.changeZoom(zoomValue);
-            //render.changeZoom(zoomInput.value);
-            //console.log(zoomInput.value);
         }, false);
 
     };
