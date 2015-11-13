@@ -20,29 +20,22 @@ define(['jquery', 'underscore'], function ($, _) {
         y: 0,
         zoom: 1,
         getX: function (p_x) {
-            var x = (p_x * this.zoom - this.x * this.zoom);
-
-            return x;
+            return (p_x * this.zoom - this.x * this.zoom);
         },
         getY: function (p_y) {
-            var y = (p_y * this.zoom - this.y * this.zoom);
-
-            return y;
+            return (p_y * this.zoom - this.y * this.zoom);
         },
         getMouseX: function (p_x) {
-            var x = this.x + p_x / this.zoom;
-
-            return x;
+            return this.x + p_x / this.zoom;
         },
         getMouseY: function (p_y) {
-            var y = this.y + p_y / this.zoom;
-
-            return y;
+            return this.y + p_y / this.zoom;
         }
     };
     var settings = {
         showGrid: true,
-        realisticUiMode: false
+        realisticUiMode: false,
+        lockCamera: true
     };
 
     function clearCanvas() {
@@ -123,53 +116,52 @@ define(['jquery', 'underscore'], function ($, _) {
             // radius from volume
             var radius = Math.cbrt(object.mass * object.density * massMultiplier / 4 / 3 * Math.PI);
 
-            ctx.beginPath();
-            ctx.arc(
-                camera.getX(object.x),
-                camera.getY(object.y),
-                radius * camera.zoom,
-                0,
-                2 * Math.PI,
-                false
-            );
-
-            ctx.strokeStyle = "#666";
-            ctx.fillStyle = "#000";
-
-            if (object.cameraFocus === true) ctx.fillStyle = '#40A2BF';
             if (settings.realisticUiMode === true) {
-                switch (object.cameraFocus) {
-                    case true:
-                        ctx.fillStyle = '#FFEE00';
-                        break;
-                    case false:
-                        ctx.fillStyle = '#FFF';
-                        break;
+                var size = (radius * camera.zoom) * 2;
+                ctx.drawImage(
+                    object.texture,
+                    camera.getX(object.x) - (size / 2),
+                    camera.getY(object.y) - (size / 2),
+                    size,
+                    size
+                );
+                if (object.cameraFocus === true) {
+                    //@todo Implement some sort of effect (glowing or something)
                 }
+            } else {
+                ctx.beginPath();
+                ctx.arc(
+                    camera.getX(object.x),
+                    camera.getY(object.y),
+                    radius * camera.zoom,
+                    0,
+                    2 * Math.PI,
+                    false
+                );
 
-
+                ctx.strokeStyle = "#666";
+                ctx.fillStyle = "#000";
+                if (object.cameraFocus === true) {
+                    ctx.fillStyle = '#40A2BF';
+                }
+                ctx.fill();
             }
-            ctx.fill();
         })();
     }
 
     function renderMouse() {
         if (mouse.visible === true) {
-
             ctx.fillStyle = '#AAA';
             switch (mouse.state) {
                 case 'placement':
                     ctx.beginPath();
                     ctx.arc(mouse.x, mouse.y, mouse.radius, 0, 2 * Math.PI, false);
                     ctx.fill();
-
                     break;
                 case 'mass':
-
                     ctx.beginPath();
                     ctx.arc(mouse.x2, mouse.y2, mouse.radius, 0, 2 * Math.PI, false);
                     ctx.fill();
-
                     break;
                 case 'velocity':
                     // Draw a line between x,y and x2,y2
@@ -218,15 +210,16 @@ define(['jquery', 'underscore'], function ($, _) {
 
     function renderBackgroundImage() {
         var img = document.getElementById('realistic-background');
-        var ptrn = ctx.createPattern(img, 'repeat'); // Create a pattern with this image, and set it to "repeat".
-        ctx.fillStyle = ptrn;
+        ctx.fillStyle = ctx.createPattern(img, 'repeat');
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 
 
     function renderFrame(spacetime) {
         clearCanvas();
-        centerCamera();
+        if (settings.lockCamera === true) {
+            centerCamera();
+        }
 
         if (settings.realisticUiMode === true) {
             renderBackgroundImage();
@@ -270,6 +263,10 @@ define(['jquery', 'underscore'], function ($, _) {
 
     api.toggleGrid = function () {
         settings.showGrid = !settings.showGrid;
+    };
+
+    api.toggleLockCamera = function () {
+        settings.lockCamera = !settings.lockCamera;
     };
 
     api.toggleRealisticUiMode = function () {
