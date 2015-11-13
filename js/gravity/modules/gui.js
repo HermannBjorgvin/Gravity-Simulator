@@ -109,12 +109,6 @@ define([
             render.toggleGrid();
         });
 
-        var menuToggleLockCamera = document.getElementById('menu-toggle-lock-camera');
-        menuToggleLockCamera.checked = true;
-        menuToggleLockCamera.addEventListener('change', function () {
-            render.toggleLockCamera();
-        });
-
         var menuToggleRealisticUiMode = document.getElementById('menu-toggle-realistic-ui-mode');
         menuToggleRealisticUiMode.checked = false;
         menuToggleRealisticUiMode.addEventListener('change', function () {

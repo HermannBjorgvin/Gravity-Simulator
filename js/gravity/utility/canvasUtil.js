@@ -1,38 +1,38 @@
 // canvas utility for various tasks I tend to do often
 
 define([
-    'jquery',
-    'underscore'
-], function ($, _) {
+	'jquery',
+	'underscore'
+], function($, _){
+	
+	/**************
+		Private
+	**************/
 
-    /**************
-     Private
-     **************/
-
-    var canvas = undefined;
-
-    function resizeHandler() {
+	var canvas = undefined;
+    
+    function resizeHandler(){
         canvas.height = canvas.offsetHeight;
         canvas.width = canvas.offsetWidth;
     }
 
-    /*************
-     Public
-     *************/
+	/*************
+		Public
+	*************/
 
-    var publicApi = {};
+	var publicApi = {};
 
-    publicApi.initialize = function (p_canvas) {
-        canvas = p_canvas;
-    };
+	publicApi.initialize = function(p_canvas){
+		canvas = p_canvas;
+	}
 
-    publicApi.autoResize = function () {
-        window.onresize = function () {
-            resizeHandler();
-        };
-        resizeHandler();
-    };
+	publicApi.autoResize = function(){
+	    window.onresize = function(){
+	    	resizeHandler();
+	    };
+	    resizeHandler();
+	}
 
-    return publicApi;
+	return publicApi;
 
 });
