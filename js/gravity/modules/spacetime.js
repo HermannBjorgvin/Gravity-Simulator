@@ -20,6 +20,16 @@ define([
 		// Calculation setInterval loop
 		var spacetimeLoop;
 
+        var debugLoop = setInterval(function(){
+            var totalMass = 0;
+
+            for (var i = 0; i < spacetime.length; i++) {
+                totalMass += spacetime[i].mass;
+            };
+
+            console.log(totalMass);
+        }, 1000);
+
 		// Takes object as argument, returns velocity as positive integer
 		function getVelocity(object){
 			var velocity = Math.sqrt(
@@ -135,7 +145,12 @@ define([
 				});
 
 				addObject(newObject);
-			};
+
+                return true;
+			}
+            else {
+                return false;
+            };
 		}
 
 		// Loops through all objects and calculates the delta velocity from gravitational forces
@@ -246,6 +261,16 @@ define([
 				addObject(object);
 			}
 
+            api.getFocusedObject = function(){
+                for (var i = 0; i < spacetime.length; i++) {
+                    if (spacetime[i].cameraFocus === true){
+                        return spacetime[i];
+                    }
+                };
+
+                return false;
+            }
+
 			api.clearSpacetime = function(){
 				spacetime = [];
 			}
@@ -280,18 +305,25 @@ define([
 				// -----------------------------------------
 				// | Find clustering objects and join them |
 				// -----------------------------------------
+                function recursivelyJoinClusteringObjects(){
+                    for (var a = spacetime.length - 1; a >= 0; a--) {
+                        var objectA = spacetime[a];
 
-				for (var a = spacetime.length - 1; a >= 0; a--) {
-					var objectA = spacetime[a];
+                        for (var b = spacetime.length - 1; b >= 0; b--) {
+                            if (a !== b) {
+                                var objectB = spacetime[b];
 
-					for (var b = spacetime.length - 1; b >= 0; b--) {
-						if (a !== b) {
-							var objectB = spacetime[b];
+                                var joined = joinObjects(objectA, objectB);
 
-							joinObjects(objectA, objectB);
-						};
-					};
-				};
+                                if (joined === true) {
+                                    return recursivelyJoinClusteringObjects();
+                                };
+                            };
+                        };
+                    };
+                }
+
+                recursivelyJoinClusteringObjects();
 
 				// ----------------------------------------
 				// | Newtons law of universal gravitation |

@@ -74,6 +74,43 @@ define([
 		}
 	}
 
+	var autoOrbit = function(e){
+		var focusedObject = spacetime.getFocusedObject();
+
+		var x = render.getCamera().getMouseX(mouse.x);
+		var y = render.getCamera().getMouseY(mouse.y);
+
+		var deg = Math.atan2(y - focusedObject.y, x - focusedObject.x);
+
+		var meanOrbitalVelocity = Math.sqrt(focusedObject.mass / Math.sqrt(Math.pow(focusedObject.x - x,2) + Math.pow(focusedObject.y - y,2)))
+
+		var velX = (function(){
+			var velX = focusedObject.velX;
+
+			velX += Math.cos(deg + Math.PI/2) * meanOrbitalVelocity;
+
+			return velX;
+		})();
+
+		var velY = (function(){
+			var velY = focusedObject.velY;
+
+			velY += Math.sin(deg + Math.PI/2) * meanOrbitalVelocity;
+
+			return velY;
+		})();
+
+		spacetime.addObject({
+			x: x,
+			y: y,
+			velX: velX,
+			velY: velY,
+			mass: 0.5,
+			density: 1,
+			path: []
+		});
+	}
+
 	var mouseMove = function(e){
 		// console.log('x:' + e.clientX + ' y:' + e.clientY);
 		mouse.x = e.clientX;
@@ -142,6 +179,7 @@ define([
 			}
 			else if(e.which === 3){
 				// console.log('right mouse click');
+				autoOrbit(e);
 			};
 		};
 

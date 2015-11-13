@@ -2,9 +2,9 @@
 
 define(['jquery', 'underscore'], function($, _){
 	
-	/**************
-		Private
-	**************/
+	// -----------
+	// | Private |
+	// -----------
 
 	var spacetime 		= undefined;
 	var canvas 			= undefined;
@@ -19,6 +19,7 @@ define(['jquery', 'underscore'], function($, _){
 		x:0,
 		y:0,
 		zoom: 1,
+        locked: true,
 		getX: function(p_x){
 			var x = (p_x*this.zoom - this.x*this.zoom);
 
@@ -141,7 +142,7 @@ define(['jquery', 'underscore'], function($, _){
 		})();
 	}
 
-	function renderMouse(){
+	function renderMassBuilder(){
 		if (mouse.visible === true) {
 
 			ctx.fillStyle = '#AAA';
@@ -215,12 +216,12 @@ define(['jquery', 'underscore'], function($, _){
 			renderObject(spacetime[i]);
 		};
 
-		renderMouse();		
+		renderMassBuilder();		
 	}
 
-	/*************
-		Public
-	*************/
+    // -----------
+    // | Private |
+    // -----------
 
 	var api = {};
 
@@ -229,6 +230,9 @@ define(['jquery', 'underscore'], function($, _){
 		ctx = canvas.getContext('2d');
 		spacetime = p_spacetime;
 		massMultiplier = p_massMultiplier;
+
+        // Disable canvas context menu
+        $('body').on('contextmenu', canvas, function(e){ return false; });
 
 		// WASD camera movement
 		document.addEventListener('keypress', moveCamera);
