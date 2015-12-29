@@ -41,15 +41,33 @@ define([
 				mouse.x2 = e.clientX;
 				mouse.y2 = e.clientY;
 				mouse.radius = 0;
-			break;
+				break;
+		    case 'placementR':
+		        mouse.state = 'massR';
+		        mouse.x2 = e.clientX;
+		        mouse.y2 = e.clientY;
+		        mouse.radius = 0;
+		        break;
 			case 'mass':
 				// This state ^
 				mouse.radius = Math.sqrt(Math.pow(mouse.x-mouse.x2,2)+Math.pow(mouse.y-mouse.y2,2));
 				
 				if (e.type === 'mousedown') {
+				    //alert('mousedown');
 					mouse.state = 'velocity';
 				};
-			break;
+				break;
+		    case 'massR':
+		        mouse.radius = Math.sqrt(Math.pow(mouse.x - mouse.x2, 2) + Math.pow(mouse.y - mouse.y2, 2));
+		        var mass = (4 / 3 * Math.PI) * Math.pow(mouse.radius, 3) / massMultiplier;
+		        if (e.type === 'mousedown') {
+		            autoOrbit(e, mass);
+
+                    //Reset state machine
+		            mouse.state = 'placement';
+		            mouse.radius = 0;
+		        };
+		        break;
 			case 'velocity':
 				// This state ^
 
@@ -74,7 +92,7 @@ define([
 		}
 	}
 
-	var autoOrbit = function(e){
+	var autoOrbit = function(e,mass){
 		var focusedObject = spacetime.getFocusedObject();
 
 		var x = render.getCamera().getMouseX(mouse.x);
@@ -105,7 +123,7 @@ define([
 			y: y,
 			velX: velX,
 			velY: velY,
-			mass: 0.5,
+			mass: mass,
 			density: 1,
 			path: []
 		});
@@ -116,7 +134,7 @@ define([
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
 
-		if (mouse.state === 'mass' || mouse.state === 'velocity') {
+		if (mouse.state === 'mass' || mouse.state === 'velocity' || mouse.state === 'massR') {
 			massBuilder(e);
 		};
 
@@ -174,12 +192,13 @@ define([
 		canvas.onmousedown = function(e){
 			if (e.which === 1) {
 				// console.log('left mouse click');
-				// console.log(spacetime.getSpace().length);
+			    // console.log(spacetime.getSpace().length);
 				massBuilder(e);
 			}
 			else if(e.which === 3){
-				// console.log('right mouse click');
-				autoOrbit(e);
+			    // console.log('right mouse click');
+			    mouse.state = 'placementR';
+				massBuilder(e)
 			};
 		};
 
