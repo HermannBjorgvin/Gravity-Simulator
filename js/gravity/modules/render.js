@@ -147,14 +147,12 @@ define(['jquery', 'underscore'], function($, _){
 
 			ctx.fillStyle = '#AAA';
 			switch (mouse.state) {
-				case 'placementR':
 				case 'placement':
 					ctx.beginPath();
 					ctx.arc(mouse.x, mouse.y, mouse.radius, 0, 2 * Math.PI, false);
 					ctx.fill();
 				
 				break;
-				case 'massR':
 				case 'mass':
 
 					ctx.beginPath();
