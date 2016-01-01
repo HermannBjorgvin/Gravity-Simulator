@@ -187,10 +187,9 @@ define([
 		});
 
 		var cyclefocusbtn = document.getElementById('menu-cycle-focus');
-		cyclefocusbtn.addEventListener('click', function () {
-			spacetime.cycleFocus();
-		});
-
+		document.getElementById('menu-cycle-focus').onmousedown = function (e) {
+			spacetime.cycleFocus((e.which == 1) ? true : false);
+		};
 
 		canvas.onmousedown = function (e) {
 			if (e.which === 1) {
