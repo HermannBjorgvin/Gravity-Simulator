@@ -272,7 +272,7 @@ define([
 				};
 				if (flagFocused)
 					return spacetime[i];
-				else if (spacetime.length == 1) {
+				else if (spacetime.length != 0) {
 					api.cycleFocus();
 					return spacetime[0];
 				}
