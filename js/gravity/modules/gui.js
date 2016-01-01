@@ -53,13 +53,11 @@ define([
 					}
 					else { //auto-orbiting
 						var mass = (4 / 3 * Math.PI) * Math.pow(mouse.radius, 3) / massMultiplier;
-						if (e.type === 'mousedown') {
-							autoOrbit(e, mass);
+						autoOrbit(e, mass);
 
-							//Reset state machine
-							mouse.state = 'placement';
-							mouse.radius = 0;
-						};
+						//Reset state machine
+						mouse.state = 'placement';
+						mouse.radius = 0;
 					}
 				}
 				break;
@@ -88,7 +86,9 @@ define([
 	}
 
 	var autoOrbit = function (e, mass) {
-		var focusedObject = spacetime.getFocusedObject();
+	    var focusedObject = spacetime.getFocusedObject();
+	    if (focusedObject === false)
+	        return;
 		var x, y;
 		if (menuCustomMass) {
 			x = render.getCamera().getMouseX(mouse.x2);
