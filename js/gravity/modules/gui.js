@@ -196,7 +196,7 @@ define([
 			if (e.which === 1) {
 				// console.log('left mouse click');
 				// console.log(spacetime.getSpace().length);
-				if ((mouse.state != 'placement' && mouse.orbit == 'auto') || e.which == 27) { //if user was trying to put an auto-orbiting mass, and clicked left button, then he is probably trying to cancel. Cancel then.
+				if ((mouse.state != 'placement' && mouse.orbit == 'auto')) { //if user was trying to put an auto-orbiting mass, and clicked left button, then he is probably trying to cancel. Cancel then.
 					// Reset state machine
 					mouse.state = 'placement';
 					mouse.radius = 0;
@@ -208,7 +208,7 @@ define([
 			}
 			else if (e.which === 3) {
 				// console.log('right mouse click');
-				if ((mouse.state != 'placement' && mouse.orbit == 'custom') || e.which == 27) { //if user was trying to put a custom mass, and clicked right button, then he is probably trying to cancel. Cancel then.
+				if ((mouse.state != 'placement' && mouse.orbit == 'custom')) { //if user was trying to put a custom mass, and clicked right button, then he is probably trying to cancel. Cancel then.
 					// Reset state machine
 					mouse.state = 'placement';
 					mouse.radius = 0;
