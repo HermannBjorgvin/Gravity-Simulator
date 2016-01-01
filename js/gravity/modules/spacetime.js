@@ -284,15 +284,14 @@ define([
 				spacetime = [];
 			}
 
-			api.cycleFocus = function(){
+			api.cycleFocus = function(direction){ //direction: whether forwards or backwards in array. True for next, false for previous
 				var objectFound = false;
 
 				for (var i = 0; i < spacetime.length; i++) {
 					if(spacetime[i].cameraFocus !== undefined && spacetime[i].cameraFocus === true){
 						
 						spacetime[i].cameraFocus = false;
-						spacetime[((i+1)%spacetime.length)].cameraFocus = true;
-
+						spacetime[((i + spacetime.length + ((direction) ? 1 : -1))%spacetime.length)].cameraFocus = true;
 						objectFound = true;
 
 						break;
