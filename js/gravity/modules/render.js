@@ -19,7 +19,7 @@ define(['jquery', 'underscore'], function($, _){
 		x:0,
 		y:0,
 		zoom: 1,
-        locked: true,
+		locked: true,
 		getX: function(p_x){
 			var x = (p_x*this.zoom - this.x*this.zoom);
 
@@ -146,7 +146,7 @@ define(['jquery', 'underscore'], function($, _){
 		if (mouse.visible === true) {
 
 			ctx.fillStyle = '#AAA';
-			switch (mouse.state){
+			switch (mouse.state) {
 				case 'placement':
 					ctx.beginPath();
 					ctx.arc(mouse.x, mouse.y, mouse.radius, 0, 2 * Math.PI, false);
@@ -219,9 +219,9 @@ define(['jquery', 'underscore'], function($, _){
 		renderMassBuilder();		
 	}
 
-    // -----------
-    // | Private |
-    // -----------
+	// -----------
+	// | Private |
+	// -----------
 
 	var api = {};
 
@@ -231,8 +231,8 @@ define(['jquery', 'underscore'], function($, _){
 		spacetime = p_spacetime;
 		massMultiplier = p_massMultiplier;
 
-        // Disable canvas context menu
-        $('body').on('contextmenu', canvas, function(e){ return false; });
+		// Disable canvas context menu
+		$('body').on('contextmenu', canvas, function(e){ return false; });
 
 		// WASD camera movement
 		document.addEventListener('keypress', moveCamera);
