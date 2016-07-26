@@ -146,21 +146,32 @@ define([
 	*************/
 
 	var guiApi = {};
-	var menuCustomMass
+	var menuCustomMass, menuShowGrid;
 	guiApi.initialize = function (p_spacetime, p_render, p_canvas, p_massMultiplier) {
 		spacetime = p_spacetime;
 		render = p_render;
 		canvas = p_canvas;
 		massMultiplier = p_massMultiplier;
-
-		document.getElementById('menu-toggle-grid').checked = 1;
-		document.getElementById('menu-toggle-grid').addEventListener('change', function () {
-			render.toggleGrid();
+        
+		menuShowGrid = document.getElementById('menu-toggle-grid');
+		render.setDrawGrid(menuShowGrid.checked);
+		menuShowGrid.addEventListener('change', function () {
+			render.setDrawGrid(menuShowGrid.checked);
 		});
 		menuCustomMass = document.getElementById('menu-toggle-custom-mass').checked;
 		document.getElementById('menu-toggle-custom-mass').addEventListener('change', function () {
 			menuCustomMass = document.getElementById('menu-toggle-custom-mass').checked;
 		});
+        
+		render.setDrawPath(document.getElementById('menu-toggle-draw-path').checked);
+		document.getElementById('menu-toggle-draw-path').addEventListener('change', function () {
+		    render.setDrawPath(document.getElementById('menu-toggle-draw-path').checked);
+		});
+        
+		document.getElementById('menu-reset-camera').onmousedown = function () {
+		    render.resetCamera();
+		}
+
 		var massMultiplierInput = document.getElementById('menu-mass-multiplier');
 		massMultiplierInput.value = 200;
 		massMultiplierInput.addEventListener('change', function () {
@@ -171,6 +182,7 @@ define([
 
 		var zoomInput = document.getElementById('menu-zoom');
 		zoomInput.value = 1;
+		render.changeZoom(zoomInput.value);
 		zoomInput.addEventListener('change', function () {
 			render.changeZoom(zoomInput.value);
 		});
