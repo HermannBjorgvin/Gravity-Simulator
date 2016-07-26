@@ -20,15 +20,15 @@ define([
 		// Calculation setInterval loop
 		var spacetimeLoop;
 
-        var debugLoop = setInterval(function(){
-            var totalMass = 0;
+		var debugLoop = setInterval(function(){
+			var totalMass = 0;
 
-            for (var i = 0; i < spacetime.length; i++) {
-                totalMass += spacetime[i].mass;
-            };
+			for (var i = 0; i < spacetime.length; i++) {
+				totalMass += spacetime[i].mass;
+			};
 
-            console.log(totalMass);
-        }, 1000);
+			console.log(totalMass);
+		}, 1000);
 
 		// Takes object as argument, returns velocity as positive integer
 		function getVelocity(object){
@@ -127,7 +127,7 @@ define([
 
 				// New density calculated from both objects mass and density
 				var density = objectA.density*objectA.mass/mass+
-						  	  objectB.density*objectB.mass/mass;
+							  objectB.density*objectB.mass/mass;
 
 				// New path is a copy of the larger object's path
 				var path = objectA.mass >= objectB.mass ? objectA.path : objectB.path;
@@ -146,11 +146,11 @@ define([
 
 				addObject(newObject);
 
-                return true;
+				return true;
 			}
-            else {
-                return false;
-            };
+			else {
+				return false;
+			};
 		}
 
 		// Loops through all objects and calculates the delta velocity from gravitational forces
@@ -261,29 +261,37 @@ define([
 				addObject(object);
 			}
 
-            api.getFocusedObject = function(){
-                for (var i = 0; i < spacetime.length; i++) {
-                    if (spacetime[i].cameraFocus === true){
-                        return spacetime[i];
-                    }
-                };
-
-                return false;
-            }
+			api.getFocusedObject = function () {
+				var flagFocused = false;
+				var i;
+				for (i = 0; i < spacetime.length; i++) {
+					if (spacetime[i].cameraFocus === true){
+						flagFocused = true;
+						break;
+					}
+				};
+				if (flagFocused)
+					return spacetime[i];
+				else if (spacetime.length != 0) {
+					api.cycleFocus();
+					return spacetime[0];
+				}
+				else
+					return false;
+			}
 
 			api.clearSpacetime = function(){
 				spacetime = [];
 			}
 
-			api.cycleFocus = function(){
+			api.cycleFocus = function(direction){ //direction: whether forwards or backwards in array. True for next, false for previous
 				var objectFound = false;
 
 				for (var i = 0; i < spacetime.length; i++) {
 					if(spacetime[i].cameraFocus !== undefined && spacetime[i].cameraFocus === true){
 						
 						spacetime[i].cameraFocus = false;
-						spacetime[((i+1)%spacetime.length)].cameraFocus = true;
-
+						spacetime[((i + spacetime.length + ((direction) ? 1 : -1))%spacetime.length)].cameraFocus = true;
 						objectFound = true;
 
 						break;
@@ -305,25 +313,25 @@ define([
 				// -----------------------------------------
 				// | Find clustering objects and join them |
 				// -----------------------------------------
-                function recursivelyJoinClusteringObjects(){
-                    for (var a = spacetime.length - 1; a >= 0; a--) {
-                        var objectA = spacetime[a];
+				function recursivelyJoinClusteringObjects(){
+					for (var a = spacetime.length - 1; a >= 0; a--) {
+						var objectA = spacetime[a];
 
-                        for (var b = spacetime.length - 1; b >= 0; b--) {
-                            if (a !== b) {
-                                var objectB = spacetime[b];
+						for (var b = spacetime.length - 1; b >= 0; b--) {
+							if (a !== b) {
+								var objectB = spacetime[b];
 
-                                var joined = joinObjects(objectA, objectB);
+								var joined = joinObjects(objectA, objectB);
 
-                                if (joined === true) {
-                                    return recursivelyJoinClusteringObjects();
-                                };
-                            };
-                        };
-                    };
-                }
+								if (joined === true) {
+									return recursivelyJoinClusteringObjects();
+								};
+							};
+						};
+					};
+				}
 
-                recursivelyJoinClusteringObjects();
+				recursivelyJoinClusteringObjects();
 
 				// ----------------------------------------
 				// | Newtons law of universal gravitation |
