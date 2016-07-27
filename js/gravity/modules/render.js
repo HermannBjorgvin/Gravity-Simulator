@@ -98,7 +98,6 @@ define(['jquery', 'underscore'], function($, _){
 		}
 	}
 
-
 	var initialMarginX = 0, initialMarginY = 0, initialMarginZoom = 0;
 	var offsetX = 0, offsetY = 0, offsetZoom = 0;
 	function centerCamera(){
@@ -242,28 +241,41 @@ define(['jquery', 'underscore'], function($, _){
 		}
 	}
 
-	function renderGrid(){
-		var gridSize = 50;
+	/* Renders grid accoding to grid size and camera position and zoom */
+	function renderGrid(spacing, color){
+		var gridSize = spacing * camera.zoom;
 		var gridWidth = Math.ceil(canvas.width/gridSize)+2;
 		var gridHeight = Math.ceil(canvas.height/gridSize)+2;
 
 		for (var i = gridWidth - 1; i >= 0; i--) {
 			ctx.beginPath();
 
-			ctx.moveTo(i*gridSize-(gridSize+camera.x%gridSize), 0);
-			ctx.lineTo(i*gridSize-(gridSize+camera.x%gridSize), canvas.height);
+			ctx.moveTo(
+				i*gridSize - camera.x*camera.zoom%gridSize,
+				0
+			);
+			ctx.lineTo(
+				i*gridSize - camera.x*camera.zoom%gridSize,
+				canvas.height
+			);
 
-			ctx.strokeStyle = '#CCC';
+			ctx.strokeStyle = color;
 			ctx.lineWidth = 1;
 			ctx.stroke();
 		};
 		for (var i = gridHeight - 1; i >= 0; i--) {
 			ctx.beginPath();
 
-			ctx.moveTo(0, i*gridSize-(gridSize+camera.y%gridSize));
-			ctx.lineTo(canvas.width, i*gridSize-(gridSize+camera.y%gridSize));
+			ctx.moveTo(
+				0,
+				i*gridSize - camera.y*camera.zoom%gridSize
+			);
+			ctx.lineTo(
+				canvas.width,
+				i*gridSize - camera.y*camera.zoom%gridSize
+			);
 
-			ctx.strokeStyle = '#CCC';
+			ctx.strokeStyle = color;
 			ctx.lineWidth = 1;
 			ctx.stroke();
 		};
@@ -274,7 +286,7 @@ define(['jquery', 'underscore'], function($, _){
 		centerCamera();
 
 		if (settings.showGrid === true) {
-			renderGrid();	
+			renderGrid(50, "#EEE");	
 		};
 
 		for (var i = spacetime.length - 1; i >= 0; i--) {
