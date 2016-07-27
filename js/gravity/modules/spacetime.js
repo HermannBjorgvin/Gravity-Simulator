@@ -26,8 +26,6 @@ define([
 			for (var i = 0; i < spacetime.length; i++) {
 				totalMass += spacetime[i].mass;
 			};
-
-			console.log(totalMass);
 		}, 1000);
 
 		// Takes object as argument, returns velocity as positive integer
