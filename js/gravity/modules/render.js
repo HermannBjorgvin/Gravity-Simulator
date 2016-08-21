@@ -224,6 +224,13 @@ define(['jquery', 'underscore'], function($, _){
 					ctx.fill();
 				
 				break;
+    			case 'disk':
+                    ctx.fillStyle = 'rgba(170, 170, 170, 0.5)'
+    				ctx.beginPath();
+    				ctx.arc(mouse.x2, mouse.y2, mouse.radius, 0, 2 * Math.PI, false);
+    				ctx.fill();
+			
+    			break;
 				case 'velocity':
 					// Draw a line between x,y and x2,y2
 					ctx.beginPath();

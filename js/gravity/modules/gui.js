@@ -14,13 +14,16 @@ define([
 	var render = undefined;
 	var canvas = undefined;
 	var massMultiplier = undefined; // How exagurated the size of the objects are (humans like that)
-
+    var orbitMass = undefined; // The size (in effective mouse pixels) of the default orbiting masses
+    var diskDensity = undefined; // the density of disk generation
+    
 	// Function that controls the left mouse which controls the massbuilder
 	/*
 		States:
 			placement
 			mass
 			velocity
+            disk
 	*/
 
 	var mouse = {
@@ -61,6 +64,28 @@ define([
 					}
 				}
 				break;
+			case 'disk':
+				// This state ^
+				mouse.radius = Math.sqrt(Math.pow(mouse.x - mouse.x2, 2) + Math.pow(mouse.y - mouse.y2, 2));
+				if (e.type === 'mousedown') {
+					var mass = (4 / 3 * Math.PI) * Math.pow(orbitMass, 3) / massMultiplier;
+					var count = ( Math.PI * Math.pow(mouse.radius, 2) / (50*50*render.getCamera().zoom*render.getCamera().zoom) ) * diskDensity;
+                    
+                    for(var i = 0; i < count; i++) {
+                        var pt_angle = Math.random() * 2 * Math.PI;
+                        var pt_radius_sq = Math.random() * mouse.radius * mouse.radius;
+                        var pt_x = Math.sqrt(pt_radius_sq) * Math.cos(pt_angle);
+                        var pt_y = Math.sqrt(pt_radius_sq) * Math.sin(pt_angle);
+                        
+            			var x = render.getCamera().getMouseX(mouse.x2 + pt_x);
+            			var y = render.getCamera().getMouseY(mouse.y2 + pt_y);
+                        autoOrbit(e, mass, x, y); 
+                    }
+					//Reset state machine
+					mouse.state = 'placement';
+					mouse.radius = 0;
+				}
+				break;
 			case 'velocity':
 				// This state ^
 
@@ -85,19 +110,20 @@ define([
 		}
 	}
 
-	var autoOrbit = function (e, mass) {
+	var autoOrbit = function (e, mass, x, y) {
 	    var focusedObject = spacetime.getFocusedObject();
 	    if (focusedObject === false)
 	        return;
-		var x, y;
-		if (menuCustomMass) {
-			x = render.getCamera().getMouseX(mouse.x2);
-			y = render.getCamera().getMouseY(mouse.y2);
-		}
-		else {
-			x = render.getCamera().getMouseX(mouse.x);
-			y = render.getCamera().getMouseY(mouse.y);
-		}
+		if(x === undefined || y === undefined) {
+    		if (menuCustomMass) {
+    			x = render.getCamera().getMouseX(mouse.x2);
+    			y = render.getCamera().getMouseY(mouse.y2);
+    		}
+    		else {
+    			x = render.getCamera().getMouseX(mouse.x);
+    			y = render.getCamera().getMouseY(mouse.y);
+    		}
+        }
 		var deg = Math.atan2(y - focusedObject.y, x - focusedObject.x);
 
 		var meanOrbitalVelocity = Math.sqrt(focusedObject.mass / Math.sqrt(Math.pow(focusedObject.x - x, 2) + Math.pow(focusedObject.y - y, 2)))
@@ -134,7 +160,7 @@ define([
 		mouse.x = e.clientX;
 		mouse.y = e.clientY;
 
-		if (mouse.state === 'mass' || mouse.state === 'velocity') {
+		if (mouse.state === 'mass' || mouse.state === 'velocity' || mouse.state === 'disk') {
 			massBuilder(e);
 		};
 
@@ -171,6 +197,15 @@ define([
 		document.getElementById('menu-reset-camera').onmousedown = function () {
 		    render.resetCamera();
 		}
+        
+		document.getElementById('menu-gen-disk').onmousedown = function () {
+    	    var focusedObject = spacetime.getFocusedObject();
+    	    if (focusedObject === false)
+    	        return;
+		    mouse.state = 'disk'
+            mouse.x2 = render.getCamera().getX(focusedObject.x)
+            mouse.y2 = render.getCamera().getY(focusedObject.y)
+		}
 
 		var massMultiplierInput = document.getElementById('menu-mass-multiplier');
 		massMultiplierInput.value = 200;
@@ -178,6 +213,24 @@ define([
 			massMultiplier = massMultiplierInput.value;
 			render.updateMassMultiplier(massMultiplierInput.value);
 			spacetime.updateMassMultiplier(massMultiplierInput.value);
+		});
+        
+		var orbitMassInput = document.getElementById('menu-orbit-mass');
+		orbitMassInput.value = 2;
+        orbitMass = 2;
+		orbitMassInput.addEventListener('change', function () {
+			orbitMass = orbitMassInput.value;
+			//render.updateOrbitMass(massMultiplierInput.value);
+			//spacetime.updateMassMultiplier(massMultiplierInput.value);
+		});
+        
+		var diskDensityInput = document.getElementById('menu-disk-density');
+		diskDensityInput.value = 2;
+        diskDensity = 2;
+		diskDensityInput.addEventListener('change', function () {
+			diskDensity = diskDensityInput.value;
+			//render.updateOrbitMass(massMultiplierInput.value);
+			//spacetime.updateMassMultiplier(massMultiplierInput.value);
 		});
 
 		var zoomInput = document.getElementById('menu-zoom');
@@ -207,7 +260,9 @@ define([
 			if (e.which === 1) {
 				// console.log('left mouse click');
 				// console.log(spacetime.getSpace().length);
-				if ((mouse.state != 'placement' && mouse.orbit == 'auto')) { //if user was trying to put an auto-orbiting mass, and clicked left button, then he is probably trying to cancel. Cancel then.
+                if(mouse.state === 'drag') {
+                    massBuilder(e);
+                } else if ((mouse.state != 'placement' && mouse.orbit == 'auto')) { //if user was trying to put an auto-orbiting mass, and clicked left button, then he is probably trying to cancel. Cancel then.
 					// Reset state machine
 					mouse.state = 'placement';
 					mouse.radius = 0;
@@ -219,7 +274,10 @@ define([
 			}
 			else if (e.which === 3) {
 				// console.log('right mouse click');
-				if ((mouse.state != 'placement' && mouse.orbit == 'custom')) { //if user was trying to put a custom mass, and clicked right button, then he is probably trying to cancel. Cancel then.
+                if(mouse.state === 'drag') {
+					mouse.state = 'placement';
+					mouse.radius = 0;
+                } else if ((mouse.state != 'placement' && mouse.orbit == 'custom')) { //if user was trying to put a custom mass, and clicked right button, then he is probably trying to cancel. Cancel then.
 					// Reset state machine
 					mouse.state = 'placement';
 					mouse.radius = 0;
@@ -229,7 +287,7 @@ define([
 					if (menuCustomMass)
 						massBuilder(e)
 					else
-						autoOrbit(e, 0.5);
+						autoOrbit(e, (4 / 3 * Math.PI) * Math.pow(orbitMass, 3) / massMultiplier);
 				}
 			};
 		};

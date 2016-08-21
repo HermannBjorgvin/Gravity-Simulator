@@ -78,20 +78,9 @@ textarea {
     margin: 0;
 }
 
-.menu #menu-mass-multiplier{
+.menu input[type="number"] {
     width: 3em;
 }
-
-.menu #menu-zoom{
-    width: 3em;
-}
-
-.menu #menu-speed{
-    width: 3em;
-}
-
-
-
 
 
 
