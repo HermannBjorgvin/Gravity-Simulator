@@ -15,7 +15,10 @@
    version="1.1"
    inkscape:version="0.91 r13725"
    viewBox="0 0 64 64"
-   sodipodi:docname="favicon.svg">
+   sodipodi:docname="favicon.svg"
+   inkscape:export-filename="C:\xampp\htdocs\Gravity-Experiments\favicon.png"
+   inkscape:export-xdpi="365.63"
+   inkscape:export-ydpi="365.63">
   <defs
      id="defs4686" />
   <sodipodi:namedview
@@ -25,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="11"
-     inkscape:cx="34.727282"
-     inkscape:cy="34.933172"
+     inkscape:zoom="7.5892857"
+     inkscape:cx="30.732937"
+     inkscape:cy="30.911111"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
@@ -64,20 +67,20 @@
     <circle
        style="opacity:1;fill:#156ba6;fill-opacity:1;stroke:none;stroke-width:0.117;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path5350"
-       cx="54"
+       cx="60"
        cy="32"
        r="4" />
     <path
        style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.29999995;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path5360"
        sodipodi:type="arc"
-       sodipodi:cx="32.000011"
+       sodipodi:cx="32"
        sodipodi:cy="32"
-       sodipodi:rx="21.95142"
-       sodipodi:ry="21.951416"
-       sodipodi:start="4.1976986"
-       sodipodi:end="6.0161499"
-       d="M 21.194088,12.892496 A 21.95142,21.951416 0 0 1 40.437681,11.734995 21.95142,21.951416 0 0 1 53.173416,26.207612"
+       sodipodi:rx="28"
+       sodipodi:ry="28"
+       sodipodi:start="1.9425515"
+       sodipodi:end="5.984734"
+       d="M 21.828964,58.087354 A 28,28 0 0 1 4.3075559,27.861336 28,28 0 0 1 29.900596,4.0788162 28,28 0 0 1 58.762204,23.766871"
        sodipodi:open="true" />
   </g>
 </svg>

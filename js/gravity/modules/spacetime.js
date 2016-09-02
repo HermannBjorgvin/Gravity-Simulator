@@ -13,9 +13,10 @@ define([
 		var spacetime = [];
 
 		// Simulation settings
-		var calculationsPerSec 	= 100; 	// How many gravitational calculations are performed a second
+		var calculationsPerSec 	= 60; 	// How many gravitational calculations are performed a second
 		var calculationSpeed 	= 1; 	// Speed comes at the cost of accuracy
 		var massMultiplier;				// How exagurated the size of the objects are (human readable)
+		var joinCollidingBodies = true;
 
 		// Calculation setInterval loop
 		var spacetimeLoop;
@@ -219,8 +220,9 @@ define([
 		var api = {};
 
 		// Initialize the api, call this before using
-		api.initialize = function(p_massMultiplier){
+		api.initialize = function(p_massMultiplier, p_joinCollidingBodies){
 			massMultiplier = p_massMultiplier;
+			joinCollidingBodies = p_joinCollidingBodies;
 		}
 
 		// ------------------------
@@ -329,7 +331,7 @@ define([
 					};
 				}
 
-				recursivelyJoinClusteringObjects();
+				if (joinCollidingBodies) recursivelyJoinClusteringObjects();
 
 				// ----------------------------------------
 				// | Newtons law of universal gravitation |

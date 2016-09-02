@@ -81,13 +81,13 @@ define(['jquery', 'underscore'], function($, _){
 				camera.xIT = fps;
 				break;
 		    case 'e':
-		        camera.preferredZoom = Math.round((camera.preferredZoom + 0.1) * 10) / 10;
+		        camera.preferredZoom = Math.round((camera.preferredZoom *= 1.1) * 100) / 100;
 		        zoomInput.value = camera.preferredZoom;
 		        camera.zoomIT = fps;
 		        break;
 		    case 'q':
 		        if (camera.preferredZoom > 0) {
-		            camera.preferredZoom = Math.round((camera.preferredZoom - 0.1) * 10) / 10;
+		            camera.preferredZoom = Math.round((camera.preferredZoom *= 0.9) * 100) / 100;
 		            zoomInput.value = camera.preferredZoom;
 		            camera.zoomIT = fps;
 		        }
@@ -248,6 +248,18 @@ define(['jquery', 'underscore'], function($, _){
 		}
 	}
 
+	/*
+		Debug function, renders transparent bounds where the mouse can move to the border to drag camera
+	*/
+	function renderCameraMoveBounds(){
+		ctx.fillStyle = 'rgba(255, 0, 0, 0.125)';
+
+		ctx.fillRect(0, 0, 150, canvas.height); // left
+		ctx.fillRect(150, 0, canvas.width - 300, 150); // top
+		ctx.fillRect(canvas.width - 150, 0, 150, canvas.height); // right
+		ctx.fillRect(150, canvas.height - 150, canvas.width - 300, 150); // bottom
+	}
+
 	/* Renders grid accoding to grid size and camera position and zoom */
 	function renderGrid(spacing, color){
 		var gridSize = spacing * camera.zoom;
@@ -296,11 +308,13 @@ define(['jquery', 'underscore'], function($, _){
 			renderGrid(50, "#EEE");	
 		};
 
+		// renderCameraMoveBounds();	
+		
 		for (var i = spacetime.length - 1; i >= 0; i--) {
 			renderObject(spacetime[i]);
 		};
 
-		renderMassBuilder();		
+		renderMassBuilder();
 	}
 
 	// -----------
@@ -343,6 +357,11 @@ define(['jquery', 'underscore'], function($, _){
 	api.changeZoom = function (p_zoom) {
 	    camera.preferredZoom = parseFloat(p_zoom);
 	    camera.zoomIT = fps;
+	}
+
+	api.changeCameraPos = function(x, y){
+		camera.preferredX = x;
+		camera.preferredY = y;
 	}
 	
 	api.setMouse = function(p_mouse){

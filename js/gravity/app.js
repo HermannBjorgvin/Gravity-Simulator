@@ -4,9 +4,9 @@ define([
 	'jquery',
 	'underscore',
 	'utility/canvasUtil',
-	'modules/render',
+	'modules/new_render',
 	'modules/spacetime',
-	'modules/gui'
+	'modules/new_gui'
 ], function($, _, canvasUtil, render, spacetime, gui){
 
 	var app = {};
@@ -21,19 +21,22 @@ define([
 		canvasUtil.autoResize();
 
 		// Initialize spacetime simulation
-		spacetime.initialize(massMultiplier);
+		spacetime.initialize(massMultiplier, true);
 		spacetime.startLoop();
 
 		// Initialize render module
 		render.initialize(canvas, spacetime, massMultiplier);
-		render.startLoop();
+		// render.startLoop();
 
 		// Initialize GUI
-		gui.initialize(spacetime, render, canvas, massMultiplier);
+		// gui.initialize(spacetime, render, canvas, massMultiplier);
+	
+		// Set zoom
+		// render.changeZoom(1);
 	
 		// Solar system
 		(function solarSystem(){
-			var star = spacetime.addObject({
+			/*var star = spacetime.addObject({
 				cameraFocus: true,
 				x: 200,
 				y: 200,
@@ -44,12 +47,37 @@ define([
 				mass: 500,
 				density: 0.3,
 				path: []
-			});
-			var mercury = spacetime.addObject({
-				x: 230,
+			});*/
+			var starA = spacetime.addObject({
+				cameraFocus: false,
+				x: 180,
 				y: 200,
 				velX: 0,
-				velY: Math.sqrt(500/30),
+				velY: -Math.sqrt(250/80),
+				deltaVelX: 0,
+				deltaVelY: 0,
+				mass: 250,
+				density: 0.3,
+				path: []
+			});
+			var starB = spacetime.addObject({
+				cameraFocus: false,
+				x: 220,
+				y: 200,
+				velX: 0,
+				velY: Math.sqrt(250/80),
+				deltaVelX: 0,
+				deltaVelY: 0,
+				mass: 250,
+				density: 0.3,
+				path: []
+			});
+
+			var mercury = spacetime.addObject({
+				x: 280,
+				y: 200,
+				velX: 0,
+				velY: Math.sqrt(500/80),
 				deltaVelX: 0,
 				deltaVelY: 0,
 				mass: 0.5,
@@ -90,9 +118,9 @@ define([
 				path: []
 			});
 
-			for (var i = 10; i >= 0; i--) {
+			for (var i = 50; i >= 0; i--) {
 				var rad = Math.PI * 2 * Math.random();
-				var dist = 50 + 70 * Math.random();
+				var dist = 120 + 20 * Math.random();
 
 				var x = Math.cos(rad)*dist + 200;
 				var y = Math.sin(rad)*dist + 200;
@@ -112,8 +140,9 @@ define([
 		})();
 
 		// asteroid belt around a center star
-		// var starmass = 10000;
-		/*var blackhole = spacetime.addObject({
+		/*var starmass = 100;
+		var blackhole = spacetime.addObject({
+			cameraFocus: true,
 			x: 0,
 			y: 0,
 			velX: 0,
@@ -123,16 +152,16 @@ define([
 			mass: starmass,
 			density: 0.0001,
 			path: []
-		});*/
+		});
 
-		/*for (var i = 0; i < 1000; i++) {
+		for (var i = 0; i < 800; i++) {
 			var radian = Math.random() * 2 * Math.PI;
 
 			var height = canvas.height;
 			var width = canvas.width;
 
 			// var distance = Math.sqrt(Math.pow(370, 2) * Math.random()) + 30; // Distributed
-			var distance = Math.random()*370; // Favorable to cluster near center
+			var distance = Math.random()*170+10; // Favorable to cluster near center
 
 			var x = Math.cos(radian)*distance;
 			var y = Math.sin(radian)*distance;
@@ -143,12 +172,12 @@ define([
 			spacetime.addObject({
 				x: x,
 				y: y,
-				velX: Math.cos(radian + Math.PI/2 + (Math.PI/180*0.5 - Math.PI/180*1)) * Math.sqrt(1.55/distance) * speedRand,
-				velY: Math.sin(radian + Math.PI/2 + (Math.PI/180*0.5 - Math.PI/180*1)) * Math.sqrt(1.55/distance) * speedRand,
+				velX: Math.cos(radian + Math.PI/2 + (Math.PI/180*0.5 - Math.PI/180*1)) * Math.sqrt(starmass/distance) * speedRand,
+				velY: Math.sin(radian + Math.PI/2 + (Math.PI/180*0.5 - Math.PI/180*1)) * Math.sqrt(starmass/distance) * speedRand,
 				deltaVelX: 0,
 				deltaVelY: 0,
-				mass: 0.0125,
-				density: 1,
+				mass: 0.006125,
+				density: 0.7,
 				path: []
 			});
 		};*/
