@@ -46,14 +46,31 @@ define(['jquery', 'underscore'], function($, _){
 			if (e.which === 1) {
 				this.leftMouseDown = false;
 			}
+		},
+		onScroll: function(e){
+			var x, y;
+
+			if (e.deltaY > 0) {
+				// zoom out
+				camera.zoom = Math.max(0.1, camera.zoom * 0.9);
+
+				camera.x *= 0.9;
+				camera.y *= 0.9;
+			} else if (e.deltaY < 0){
+				// zoom in
+				camera.zoom = Math.min(10, camera.zoom * 1.1);
+
+				camera.x *= 1.1;
+				camera.y *= 1.1;
+			}
 		}
 	};
 	var camera = {
-		x: 0,
-		y: 0,
+		x: -300,
+		y: -300,
 		xOffset: 0,
 		yOffset: 0,
-		zoom: 1,
+		zoom: 0.5,
 		getX: function(p_x){
 			var x = (p_x*this.zoom - this.x+this.xOffset*this.zoom);
 
@@ -238,6 +255,7 @@ define(['jquery', 'underscore'], function($, _){
 	// Gui functions
 	function centerCamera(){
 		var l_spacetime = spacetime.getSpace();
+
 		for (var i = l_spacetime.length - 1; i >= 0; i--) {
 			var object = l_spacetime[i]
 			if (object.cameraFocus == true) {
@@ -246,6 +264,24 @@ define(['jquery', 'underscore'], function($, _){
 				break;
 			};
 		};
+	}
+
+	function focusCamera(x, y){
+		var objects = spacetime.getSpace();
+		
+		for (var i = objects.length - 1; i >= 0; i--) {
+			objects[i].cameraFocus = false;
+		};
+
+		for (var i = 0; i < objects.length; i++) {
+			if (
+				Math.abs(objects[i].x - x) < 50 &&
+				Math.abs(objects[i].y - y) < 50
+			){
+				objects[i].cameraFocus = true;
+				break;
+			}
+		}
 	}
 
 	// -----------
@@ -263,11 +299,23 @@ define(['jquery', 'underscore'], function($, _){
 		// Disable canvas context menu
 		$('body').on('contextmenu', canvas, function(e){ return false; });
 
-		canvas.onmousemove = function (e) {
-			mouse.onMove(e);
-		}
+		$('.new-menu .actions li').on('click', function(){
+			var action = $(this).attr('action');
+
+			switch(action){
+				case 'toggle-grid':
+					settings.showGrid = !settings.showGrid;
+			break;
+			}
+		});
+
+		// flag that indicates in mouse up event if it was a drag or click
+		// 0 = click, 1 = drag.
+		var clickOrDrag = 0;
 
 		canvas.onmousedown = function (e) {
+			clickOrDrag = 0;
+
 			if (e.which === 1) {
 				// console.log('left down');
 			}
@@ -278,16 +326,35 @@ define(['jquery', 'underscore'], function($, _){
 			mouse.onMouseDown(e);
 		};
 
-		canvas.onmouseup = function (e) {
-			if (e.which === 1) {
-				// console.log('left up');
-			}
-			else if (e.which === 3) {
-				// console.log('right up');
-			};
+		canvas.onmousemove = function (e) {
+			clickOrDrag = 1;
 
-			mouse.onMouseUp(e);
+			mouse.onMove(e);
+		}
+
+		canvas.onmouseup = function (e) {
+
+			// If it was a drag delegate to mouse drag
+			if (clickOrDrag === 1) {
+				mouse.onMouseUp(e);
+
+				console.log('that was a drag...')
+			}
+			else if(clickOrDrag === 0){
+				var x = (camera.getMouseX(e.pageX - canvas.offsetLeft));
+				var y = (camera.getMouseX(e.pageY - canvas.offsetTop));
+
+				console.log('attempting to focus...');
+				focusCamera(x, y);
+
+				mouse.onMouseUp(e);
+			}
+
 		};
+
+		canvas.onwheel = function(e){
+			mouse.onScroll(e);
+		}
 
 		renderLoop = setInterval(function(){
 			renderFrame(spacetime.getSpace());
