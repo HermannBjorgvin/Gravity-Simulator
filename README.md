@@ -1,7 +1,7 @@
-<h3>Want to help out or modify this project?</h3>
+## Want to help out or modify this project?
 Submit a pull request and it will likely get accepted!
 
-##How is the code structured?
+## How is the code structured?
 I used the AMD module system to build the application, specifically I use require.js for a module loader
 
 There are three seperate modules
