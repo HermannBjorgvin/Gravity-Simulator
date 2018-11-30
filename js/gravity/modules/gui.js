@@ -42,8 +42,8 @@ define([
 			case 'placement':
 				// This state ^
 				mouse.state = 'mass';
-				mouse.x2 = e.pageX - canvas.offsetLeft;
-				mouse.y2 = e.pageY - canvas.offsetTop;
+				mouse.x2 = e.clientX;
+				mouse.y2 = e.clientY;
 				mouse.radius = 0;
 				break;
 			case 'mass':
@@ -157,11 +157,8 @@ define([
 
 	var mouseMove = function (e) {
 		// console.log('x:' + e.clientX + ' y:' + e.clientY);
-		// mouse.x = e.clientX;
-		// mouse.y = e.clientY;
-
-		mouse.x = e.pageX - canvas.offsetLeft;
-		mouse.y = e.pageY - canvas.offsetTop;
+		mouse.x = e.clientX;
+		mouse.y = e.clientY;
 
 		if (mouse.state === 'mass' || mouse.state === 'velocity' || mouse.state === 'disk') {
 			massBuilder(e);
