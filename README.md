@@ -1,5 +1,7 @@
-## Want to help out or modify this project?
-Submit a pull request and it will likely get accepted!
+# 2018 Refactor
+I have set a goal to refactor this application in 2018-2019. I want this application to be highly usable on desktops, tablets, and mobile devices, with a user interface that adapts to the device but lets desktop users still be able to use the more complicated toolset.
+
+The first issue to resolve is migrating to VueJS and a ES6 module system.
 
 ## How is the code structured?
 I used the AMD module system to build the application, specifically I use require.js for a module loader
