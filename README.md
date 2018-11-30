@@ -3,6 +3,13 @@ I have set a goal to refactor this application in 2018-2019. I want this applica
 
 The first issue to resolve is migrating to VueJS and a ES6 module system.
 
+Goals for the refactor
+ * new much improved Desktop/tablet/phone ui
+ * touch input support
+ * new logo
+ * Dark/light theme
+ * Webassembly barnes hutt algorithm implementation
+
 ## How is the code structured?
 I used the AMD module system to build the application, specifically I use require.js for a module loader
 
