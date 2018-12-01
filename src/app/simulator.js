@@ -7,8 +7,8 @@ import gui from './modules/gui';
 
 var app = {};
 
-app.initialize = function(canvasId){
-	var canvas = document.getElementById(canvasId);
+app.start = function(el){
+	var canvas = el;
 	var massMultiplier = 200;
 
 	// Initialize the canvas utility, includes features such as autoresize
@@ -17,7 +17,6 @@ app.initialize = function(canvasId){
 
 	// Initialize spacetime simulation
 	spacetime.initialize(massMultiplier);
-	spacetime.startLoop();
 
 	// Initialize render module
 	render.initialize(canvas, spacetime, massMultiplier);

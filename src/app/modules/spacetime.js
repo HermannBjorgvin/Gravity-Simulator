@@ -1,15 +1,18 @@
-// modules/spacetime
+/*
+  src/app/modules/spacetime.js
+  This module handles physics calculations
+
+  A few terms that may help
+    * Solid, what I am calling the stars and planets
+    * Spacetime, the Array that contains all the solids
+*/
 
 import _ from 'underscore';
-
-// -----------
-// | Private |
-// -----------
 
 // Spacetime, array that stores all objects
 var spacetime = [];
 
-// Simulation settings
+// Settings
 var calculationsPerSec  = 100;  // How many gravitational calculations are performed a second
 var calculationSpeed  = 1;  // Speed comes at the cost of accuracy
 var massMultiplier;       // How exagurated the size of the objects are (human readable)
@@ -25,71 +28,36 @@ var spacetimeLoop;
   }
 }, 1000);*/
 
-// Takes object as argument, returns velocity as positive integer
-function getVelocity(object){
-  var velocity = Math.sqrt(
-    Math.pow(object.velX, 2)+
-    Math.pow(object.velY, 2)
-  );
+const pythagorean = (x, y) => Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
 
-  return velocity;
-}
+const getObjectDistance = (a, b) => pythagorean(a.x - b.x, a.y - b.y);
+const getVelocity = x => pythagorean(x.velX, x.velY);
+// const getMomentum = a => pythagorean(a.velX, a.velY) * a.mass;
 
-// Takes object as argument, returns momentum as positive integer (unless object mass is negative)
-/*function getMomentum(object){
-  var velocity = getVelocity(object);
+// Radius center of object
+const getObjectRadius = x => Math.cbrt(x.mass*x.density*massMultiplier / 4/3*Math.PI);
 
-  return velocity * object.mass;
-}*/
-
-// Takes two objects as argument, returns distance between the two
-function getObjectDistance(objectA, objectB){
-  var distance = Math.sqrt(
-    Math.pow(objectA.x - objectB.x, 2) +
-    Math.pow(objectA.y - objectB.y, 2)
-  );
-
-  return distance;
-}
-
-// Takes in object, returns radius from object mass and density
-function getObjectRadius(object){
-  var radius = Math.cbrt(
-    (object.mass*object.density*massMultiplier) / (4/3*Math.PI)
-  );
-
-  return radius;
-}
-
-function objectConstructor(object){
-
-  // Coords
-  this.x = object.x;
-  this.y = object.y;
-
-  // Velocity
-  this.velX = object.velX;
-  this.velY = object.velY;
-
-  // Delta velocity (start at zero)
-  this.deltaVelX = 0;
-  this.deltaVelY = 0;
-
-  // Mass
-  this.mass = object.mass
-
-  // Density, defaults to 1 if undefined
-  this.density = object.density !== undefined ? object.density : 1;
-
-  // Path, starts empty
-  this.path = object.path !== undefined ? object.path : [];
-
-  // Camera focus, defaults: false
-  this.cameraFocus = object.cameraFocus !== undefined ? object.cameraFocus : false;
+// Object class
+class solid {
+  constructor(options = {}){
+    // default options
+    Object.assign(this, {
+      x: 0,
+      y: 0,
+      velX: 0,
+      velY: 0,
+      deltaVelX: 0,
+      deltaVelY: 0,
+      mass: 1,
+      density: 1,
+      path: [],
+      cameraFocus: false
+    }, options)
+  }
 }
 
 function addObject(object){
-  var newObject = new objectConstructor(object);
+  var newObject = new solid(object);
 
   spacetime.push(newObject);
 }
@@ -128,7 +96,7 @@ function joinObjects(objectA, objectB){
     var path = objectA.mass >= objectB.mass ? objectA.path : objectB.path;
 
     // Construct new object and add to spacetime
-    var newObject = new objectConstructor({
+    var newObject = new solid({
       cameraFocus:  cameraFocus,
       x:        x,
       y:        y,
@@ -148,43 +116,38 @@ function joinObjects(objectA, objectB){
   }
 }
 
-// Loops through all objects and calculates the delta velocity from gravitational forces
+/*
+  Iterate over solids in the spacetime Array and calculate their velocity.
+  This updates the deltaVel properties which will update at the end of the cycle.
+*/
 function calculateObjectForce(){
-  for (var a = spacetime.length - 1; a >= 0; a--) {
-    var objectA = spacetime[a];
+  for (let a = spacetime.length - 1; a >= 0; a--) {
+    let objectA = spacetime[a];
 
-    // Calculate forces applied to objects
-    for (var b = spacetime.length - 1; b >= 0; b--) {
-      if (b !== a) {
-        var objectB = spacetime[b];
+    for (let b = spacetime.length - 1; b >= 0; b--) {
+      if (b === a ) continue;
 
-        // getObjectDistance
-        var distance = getObjectDistance(objectA, objectB);
+      let objectB = spacetime[b];
 
-        // Find angle from vector. Fun note, if we reverse objectA and B we have anti-gravity
-        var angleToMass = Math.atan2(
-          objectB.y-objectA.y,
-          objectB.x-objectA.x
-        );
+      let distance = getObjectDistance(objectA, objectB);
 
-        // All credit for this formula goes to an Isaac Newton
-        objectA.deltaVelX += (
-          Math.cos(angleToMass) *
-          (objectB.mass/Math.pow(distance,2))
-        );
-        objectA.deltaVelY += (
-          Math.sin(angleToMass) *
-          (objectB.mass/Math.pow(distance,2))
-        );
-      }
+      // Find angle from vector. Fun note: if we reverse the objects we get anti-gravity
+      let angleToMass = Math.atan2(
+        objectB.y - objectA.y,
+        objectB.x - objectA.x
+      );
+
+      // All credit for this formula goes to Isaac Newton
+      objectA.deltaVelX += Math.cos(angleToMass) * objectB.mass/Math.pow(distance,2);
+      objectA.deltaVelY += Math.sin(angleToMass) * objectB.mass/Math.pow(distance,2);
     }
   }
 }
 
 // Loops through all objects and applies the force delta to the velocity
 function applyObjectForce(){
-  for (var i = 0; i < spacetime.length; i++) {
-    var object = spacetime[i];
+  for (let i = 0; i < spacetime.length; i++) {
+    let object = spacetime[i];
 
     // add coords to object path
     object.path.push({
@@ -209,54 +172,33 @@ function applyObjectForce(){
   }
 }
 
-// ----------
-// | Public |
-// ----------
-
-var api = {};
-
-// Initialize the api, call this before using
-api.initialize = function(p_massMultiplier){
-  massMultiplier = p_massMultiplier;
-}
-
-// ------------------------
-// | Calculation settings |
-// ------------------------
-
-  api.calculationsPerSec = function(number){
-    calculationsPerSec = number;
-  }
-
-  api.calculationSpeed = function(number){
-    calculationSpeed = number;
-  }
-
-  api.updateMassMultiplier = function(p_massMultiplier){
+export default {
+  initialize(p_massMultiplier){
     massMultiplier = p_massMultiplier;
-  }
 
-  api.startLoop = function(){
-    var self = this;
-
-    spacetimeLoop = setInterval(function(){
-      self.calculateForces();
+    this.startLoop()
+  },
+  calculationsPerSec(number){
+    calculationsPerSec = number;
+  },
+  calculationSpeed(number){
+    calculationSpeed = number;
+  },
+  updateMassMultiplier(p_massMultiplier){
+    massMultiplier = p_massMultiplier;
+  },
+  startLoop(){
+    spacetimeLoop = setInterval(() => {
+      this.calculateForces();
     }, 1000/calculationsPerSec);
-  }
-
-  api.stopLoop = function(){
+  },
+  stopLoop(){
     clearInterval(spacetimeLoop);
-  }
-
-// ------------------------
-// | Spacetime object api |
-// ------------------------
-
-  api.addObject = function(object){
+  },
+  addObject(object){
     addObject(object);
-  }
-
-  api.getFocusedObject = function () {
+  },
+  getFocusedObject() {
     var flagFocused = false;
     var i;
     for (i = 0; i < spacetime.length; i++) {
@@ -268,18 +210,16 @@ api.initialize = function(p_massMultiplier){
     if (flagFocused)
       return spacetime[i];
     else if (spacetime.length != 0) {
-      api.cycleFocus();
+      this.cycleFocus();
       return spacetime[0];
     }
     else
       return false;
-  }
-
-  api.clearSpacetime = function(){
+  },
+  clearSpacetime(){
     spacetime = [];
-  }
-
-  api.cycleFocus = function(direction){ //direction: whether forwards or backwards in array. True for next, false for previous
+  },
+  cycleFocus(direction){ //direction: whether forwards or backwards in array. True for next, false for previous
     var objectFound = false;
 
     for (var i = 0; i < spacetime.length; i++) {
@@ -296,13 +236,11 @@ api.initialize = function(p_massMultiplier){
     if (objectFound !== true && spacetime.length > 0) {
       spacetime[0].cameraFocus = true;
     }
-  }
-
-  api.getSpace = function(){
+  },
+  getSpace(){
     return spacetime;
-  }
-
-  api.calculateForces = function(){
+  },
+  calculateForces(){
     // -----------------------------------------
     // | Find clustering objects and join them |
     // -----------------------------------------
@@ -336,5 +274,4 @@ api.initialize = function(p_massMultiplier){
     // Apply delta velocity to all objects
     applyObjectForce();
   }
-
-export default api;
+}

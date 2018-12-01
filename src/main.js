@@ -3,8 +3,8 @@ import App from './App.vue'
 import store from './store'
 import './registerServiceWorker'
 
+import 'normalize.css';
 import "@/assets/main.css";
-import "@/assets/normalize.css";
 
 Vue.config.productionTip = false
 

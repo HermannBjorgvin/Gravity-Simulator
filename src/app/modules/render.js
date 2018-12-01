@@ -2,16 +2,12 @@
 
 import $ from 'jquery';
 
-// -----------
-// | Private |
-// -----------
-
-var spacetime     = undefined;
-var canvas      = undefined;
-var ctx       = undefined;
-var renderLoop    = undefined;
-var fps       = 60;
-var massMultiplier  = undefined; // Object size multiplier
+var spacetime = undefined;
+var canvas = undefined;
+var ctx = undefined;
+var renderLoop = undefined;
+var fps = 60;
+var massMultiplier = undefined;
 var mouse = {
   visible: false
 };
@@ -20,39 +16,34 @@ var camera = {
   y:0,
   marginX:0,
   marginY:0,
-      marginZoom:0,
+  marginZoom:0,
   preferredX:0,
   preferredY:0,
   preferredZoom:0,
   drag:50,
   xIT:0,
   yIT:0,
-      zoomIT:0,
+  zoomIT:0,
   zoom: 0,
   locked: true,
-  getX: function(p_x){
-    var x = (p_x*this.zoom - this.x*this.zoom);
-
-    return x;
-  },
-  getY: function(p_y){
-    var y = (p_y*this.zoom - this.y*this.zoom);
-
-    return y;
-  },
-  getMouseX: function(p_x){
-    var x = this.x + p_x/this.zoom;
-
-    return x;
-  },
-  getMouseY: function(p_y){
-    var y = this.y + p_y/this.zoom;
-
-    return y;
-  }
+  getX(p_x){ return (p_x*this.zoom - this.x*this.zoom) },
+  getY(p_y){ return (p_y*this.zoom - this.y*this.zoom) },
+  getMouseX(p_x){ return this.x + p_x/this.zoom },
+  getMouseY(p_y){ return this.y + p_y/this.zoom }
 };
 var settings = {
   showGrid: true
+}
+
+function resetCamera() {
+  camera.preferredX = 0;
+  camera.preferredY = 0;
+  camera.preferredZoom = 1;
+  zoomInput.value = 1;
+
+  camera.xIT = fps;
+  camera.yIT = fps;
+  camera.zoomIT = fps;
 }
 
 function clearCanvas(){
@@ -62,7 +53,6 @@ function clearCanvas(){
 
 var zoomInput = document.getElementById('menu-zoom');
 function moveCamera(e){
-
   switch(String.fromCharCode(e.charCode).toLowerCase()){
     case 'w':
       camera.preferredY -= camera.drag;
@@ -93,7 +83,7 @@ function moveCamera(e){
           }
           break;
       case 'r':
-          api.resetCamera();
+          resetCamera();
           break;
   }
 }
@@ -307,67 +297,44 @@ function renderFrame(spacetime){
 // | Private |
 // -----------
 
-var api = {};
+export default {
+  initialize(p_canvas, p_spacetime, p_massMultiplier){
+    canvas = p_canvas;
+    ctx = canvas.getContext('2d');
+    spacetime = p_spacetime;
+    massMultiplier = p_massMultiplier;
 
-api.initialize = function(p_canvas, p_spacetime, p_massMultiplier){
-  canvas = p_canvas;
-  ctx = canvas.getContext('2d');
-  spacetime = p_spacetime;
-  massMultiplier = p_massMultiplier;
+    // Disable canvas context menu
+    $('body').on('contextmenu', canvas, function(){ return false; });
 
-  // Disable canvas context menu
-  $('body').on('contextmenu', canvas, function(){ return false; });
-
-  // WASD camera movement
-  document.addEventListener('keypress', moveCamera);
+    // WASD camera movement
+    document.addEventListener('keypress', moveCamera);
+  },
+  startLoop(){
+    renderLoop = setInterval(function(){
+      renderFrame(spacetime.getSpace());
+    }, 1000/fps);
+  },
+  stopLoop(){
+    clearInterval(renderLoop);
+  },
+  setDrawGrid(value){
+    settings.showGrid = value;
+  },
+  updateMassMultiplier(p_massMultiplier){
+    massMultiplier = p_massMultiplier;
+  },
+  changeZoom(p_zoom) {
+      camera.preferredZoom = parseFloat(p_zoom);
+      camera.zoomIT = fps;
+  },
+  setMouse(p_mouse){
+    mouse = p_mouse;
+  },
+  getCamera(){
+    return camera
+  },
+  setDrawPath (value) {
+      menuDrawPath = value;
+  }
 }
-
-api.startLoop = function(){
-  renderLoop = setInterval(function(){
-    renderFrame(spacetime.getSpace());
-  }, 1000/fps);
-}
-
-api.stopLoop = function(){
-  clearInterval(renderLoop);
-}
-
-api.setDrawGrid = function(value){
-  settings.showGrid = value;
-}
-
-api.updateMassMultiplier = function(p_massMultiplier){
-  massMultiplier = p_massMultiplier;
-}
-
-api.changeZoom = function (p_zoom) {
-    camera.preferredZoom = parseFloat(p_zoom);
-    camera.zoomIT = fps;
-}
-
-api.setMouse = function(p_mouse){
-  mouse = p_mouse;
-}
-
-api.getCamera = function(){
-  return camera
-}
-
-api.resetCamera = function () {
-    camera.preferredX = 0;
-    camera.preferredY = 0;
-    camera.preferredZoom = 1;
-    zoomInput.value = 1;
-
-
-    camera.xIT = fps;
-    camera.yIT = fps;
-    camera.zoomIT = fps;
-}
-
-api.setDrawPath = function (value) {
-    menuDrawPath = value;
-}
-
-export default api;
-
