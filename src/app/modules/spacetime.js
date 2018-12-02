@@ -36,6 +36,7 @@ const getVelocity = x => pythagorean(x.velX, x.velY);
 
 // Radius center of object
 const getObjectRadius = x => Math.cbrt(x.mass*x.density*massMultiplier / 4/3*Math.PI);
+const objectsAreOverlapping = (a, b) => getObjectDistance(a, b) < getObjectRadius(a) + getObjectRadius(b)
 
 // Object class
 class solid {
@@ -56,17 +57,15 @@ class solid {
   }
 }
 
-function addObject(object){
-  var newObject = new solid(object);
+function addObject(options){
+  let Solid = new solid(options);
 
-  spacetime.push(newObject);
+  spacetime.push(Solid);
 }
 
 // Takes in two objects, joins them if they're within eachothers radius
 function joinObjects(objectA, objectB){
-  if (
-    getObjectDistance(objectA, objectB) < getObjectRadius(objectA) + getObjectRadius(objectB)
-  ){
+  if (objectsAreOverlapping(objectA, objectB)){
     // Splice the objects from spacetime
     spacetime = _.without(spacetime, objectA);
     spacetime = _.without(spacetime, objectB);
@@ -128,7 +127,6 @@ function calculateObjectForce(){
       if (b === a ) continue;
 
       let objectB = spacetime[b];
-
       let distance = getObjectDistance(objectA, objectB);
 
       // Find angle from vector. Fun note: if we reverse the objects we get anti-gravity
@@ -241,9 +239,11 @@ export default {
     return spacetime;
   },
   calculateForces(){
+
     // -----------------------------------------
     // | Find clustering objects and join them |
     // -----------------------------------------
+
     function recursivelyJoinClusteringObjects(){
       for (var a = spacetime.length - 1; a >= 0; a--) {
         var objectA = spacetime[a];

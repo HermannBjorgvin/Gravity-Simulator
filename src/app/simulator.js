@@ -20,7 +20,6 @@ app.start = function(el){
 
 	// Initialize render module
 	render.initialize(canvas, spacetime, massMultiplier);
-	render.startLoop();
 
 	// Initialize GUI
 	gui.initialize(spacetime, render, canvas, massMultiplier);

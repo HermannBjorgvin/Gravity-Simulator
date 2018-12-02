@@ -178,6 +178,7 @@ function renderObject(object){
   (function(){
     // radius from volume
     var radius = Math.cbrt(object.mass*object.density*massMultiplier / 4/3*Math.PI);
+    radius = Math.max(radius, 1);
 
     ctx.beginPath();
     ctx.arc(
@@ -309,6 +310,8 @@ export default {
 
     // WASD camera movement
     document.addEventListener('keypress', moveCamera);
+
+    this.startLoop();
   },
   startLoop(){
     renderLoop = setInterval(function(){
