@@ -57,59 +57,6 @@ export default class Spacetime {
     objectsAreOverlapping: (a, b) => this.math.getObjectDistance(a, b) < this.math.getObjectRadius(a) + this.math.getObjectRadius(b)
   };
 
-  addObject(options){ this.spacetime.push(new Solid(options)); }
-
-  // Takes in two objects, joins them if they're within eachothers radius
-  joinObjects(objectA, objectB){
-    if (this.math.objectsAreOverlapping(objectA, objectB)){
-      // Splice the objects from spacetime
-      this.spacetime = _.without(this.spacetime, objectA);
-      this.spacetime = _.without(this.spacetime, objectB);
-
-      // Check if camera is focused on either object, if so the camera will be focused on this new object
-      var cameraFocus = false;
-      if(objectA.cameraFocus === true || objectB.cameraFocus === true){
-        cameraFocus = true;
-      }
-
-      // New mass
-      var mass = objectA.mass + objectB.mass;
-
-      // Coords
-      var x = objectA.x*objectA.mass/mass + objectB.x*objectB.mass/mass;
-      var y = objectA.y*objectA.mass/mass + objectB.y*objectB.mass/mass;
-
-      // Velocity
-      var velX = objectA.velX*objectA.mass/mass + objectB.velX*objectB.mass/mass;
-      var velY = objectA.velY*objectA.mass/mass + objectB.velY*objectB.mass/mass;
-
-      // New density calculated from both objects mass and density
-      var density = objectA.density*objectA.mass/mass+ objectB.density*objectB.mass/mass;
-
-      // New path is a copy of the larger object's path
-      var path = objectA.mass >= objectB.mass ? objectA.path : objectB.path;
-
-      // Construct new object and add to spacetime
-      var newObject = new Solid({
-        cameraFocus:  cameraFocus,
-        x:        x,
-        y:        y,
-        velX:       velX,
-        velY:       velY,
-        mass:       mass,
-        density:    density,
-        path:       path
-      });
-
-      this.addObject(newObject);
-
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-
   /*
     Iterate over solids in the spacetime Array and calculate their velocity.
     This updates the deltaVel properties which will update at the end of the cycle.
@@ -176,35 +123,6 @@ export default class Spacetime {
   }
 
   calculateForces(){
-
-    // -----------------------------------------
-    // | Find clustering objects and join them |
-    // -----------------------------------------
-
-    const recursivelyJoinClusteringObjects = () => {
-      for (var a = this.spacetime.length - 1; a >= 0; a--) {
-        var objectA = this.spacetime[a];
-
-        for (var b = this.spacetime.length - 1; b >= 0; b--) {
-          if (a !== b) {
-            var objectB = this.spacetime[b];
-
-            var joined = this.joinObjects(objectA, objectB);
-
-            if (joined === true) {
-              return recursivelyJoinClusteringObjects();
-            }
-          }
-        }
-      }
-    }
-
-    recursivelyJoinClusteringObjects();
-
-    // ----------------------------------------
-    // | Newtons law of universal gravitation |
-    // ----------------------------------------
-
     // Calculate gravitational forces between all objects
     this.calculateObjectForce();
 
