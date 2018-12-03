@@ -1,5 +1,7 @@
 // app
 
+import Hammer from 'hammerjs';
+
 import canvasUtil from './utility/canvasUtil';
 import render from './modules/render';
 import Spacetime from './modules/spacetime';
@@ -13,6 +15,12 @@ app.start = function(el, opts = {}){
     // Put default options here
     massMultiplier: 40
   }, opts);
+
+  let hammer = new Hammer(el);
+
+  hammer.get('pinch').set({
+    enable: true
+  });
 
 	// Initialize the canvas utility, includes features such as autoresize
 	canvasUtil.autoResize(canvas);

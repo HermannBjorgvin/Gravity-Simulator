@@ -8,19 +8,16 @@ var ctx = undefined;
 var renderLoop = undefined;
 var fps = 60;
 var massMultiplier = undefined;
-var mouse = {
-  visible: false
-};
 var camera = {
-  x:0,
-  y:0,
-  marginX:0,
-  marginY:0,
-  marginZoom:0,
-  preferredX:0,
-  preferredY:0,
-  preferredZoom:parseFloat(1),
-  drag:50,
+  x: -300,
+  y: -150,
+  marginX: 0,
+  marginY: 0,
+  marginZoom: 0,
+  preferredX: 0,
+  preferredY: 0,
+  preferredZoom: 1,
+  drag: 50,
   xIT: fps,
   yIT: fps,
   zoomIT: fps,
@@ -35,102 +32,12 @@ var settings = {
   showGrid: true
 }
 
-function resetCamera() {
-  camera.preferredX = 0;
-  camera.preferredY = 0;
-  camera.preferredZoom = 1;
-  zoomInput.value = 1;
-
-  camera.xIT = fps;
-  camera.yIT = fps;
-  camera.zoomIT = fps;
-}
-
 function clearCanvas(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.beginPath();
 }
 
-var zoomInput = document.getElementById('menu-zoom');
-function moveCamera(e){
-  switch(String.fromCharCode(e.charCode).toLowerCase()){
-    case 'w':
-      camera.preferredY -= camera.drag;
-      camera.yIT = fps;
-      break;
-    case 'a':
-      camera.preferredX -= camera.drag;
-      camera.xIT = fps;
-      break;
-    case 's':
-      camera.preferredY += camera.drag;
-      camera.yIT = fps;
-      break;
-    case 'd':
-      camera.preferredX += camera.drag;
-      camera.xIT = fps;
-      break;
-      case 'e':
-          camera.preferredZoom = Math.round((camera.preferredZoom + 0.1) * 10) / 10;
-          zoomInput.value = camera.preferredZoom;
-          camera.zoomIT = fps;
-          break;
-      case 'q':
-          if (camera.preferredZoom > 0) {
-              camera.preferredZoom = Math.round((camera.preferredZoom - 0.1) * 10) / 10;
-              zoomInput.value = camera.preferredZoom;
-              camera.zoomIT = fps;
-          }
-          break;
-      case 'r':
-          resetCamera();
-          break;
-  }
-}
-
-var initialMarginX = 0, initialMarginY = 0, initialMarginZoom = 0;
-var offsetX = 0, offsetY = 0, offsetZoom = 0;
-function centerCamera(){
-  var l_spacetime = spacetime.getSpace();
-  for (var i = l_spacetime.length - 1; i >= 0; i--) {
-    var object = l_spacetime[i]
-    if (object.cameraFocus == true) {
-      if(camera.xIT > 0) {
-          if (camera.xIT == fps) {
-              offsetX = camera.preferredX - camera.marginX;
-              initialMarginX = camera.marginX;
-          }
-        camera.xIT -= 1;
-        camera.marginX = initialMarginX + Math.sign(offsetX) * Math.sqrt(Math.pow(offsetX,2) - Math.pow(offsetX * (fps - camera.xIT)/fps - offsetX,2));
-      }
-      else camera.marginX = camera.preferredX;
-
-      if (camera.yIT > 0) {
-          if (camera.yIT == fps) {
-              offsetY = camera.preferredY - camera.marginY;
-              initialMarginY = camera.marginY;
-          }
-        camera.yIT -= 1;
-        camera.marginY = initialMarginY + Math.sign(offsetY) * Math.sqrt(Math.pow(offsetY,2) - Math.pow(offsetY * (fps - camera.yIT)/fps - offsetY,2));
-      }
-      else camera.marginY = camera.preferredY;
-
-      if (camera.zoomIT > 0) {
-          if (camera.zoomIT == fps) {
-              offsetZoom = camera.preferredZoom - camera.zoom;
-              initialMarginZoom = camera.zoom;
-          }
-
-          camera.zoomIT -= 1;
-          camera.zoom = initialMarginZoom + Math.sign(offsetZoom) * Math.sqrt(Math.pow(offsetZoom, 2) - Math.pow(offsetZoom * (fps - camera.zoomIT)/fps - offsetZoom, 2));
-      } else camera.zoom = camera.preferredZoom;
-
-      camera.x = object.x - canvas.width / 2 / camera.zoom + camera.marginX;
-      camera.y = object.y - canvas.height / 2 / camera.zoom + camera.marginY;
-    }
-  }
-}
-var menuDrawPath = false;
+var menuDrawPath = true;
 
 function renderObject(object){
   // --------------------
@@ -197,48 +104,6 @@ function renderObject(object){
   })();
 }
 
-function renderMassBuilder(){
-  if (mouse.visible === true) {
-
-    ctx.fillStyle = '#AAA';
-    switch (mouse.state) {
-      case 'placement':
-        ctx.beginPath();
-        ctx.arc(mouse.x, mouse.y, mouse.radius, 0, 2 * Math.PI, false);
-        ctx.fill();
-
-      break;
-      case 'mass':
-
-        ctx.beginPath();
-        ctx.arc(mouse.x2, mouse.y2, mouse.radius, 0, 2 * Math.PI, false);
-        ctx.fill();
-
-      break;
-        case 'disk':
-                  ctx.fillStyle = 'rgba(170, 170, 170, 0.5)'
-          ctx.beginPath();
-          ctx.arc(mouse.x2, mouse.y2, mouse.radius, 0, 2 * Math.PI, false);
-          ctx.fill();
-
-        break;
-      case 'velocity':
-        // Draw a line between x,y and x2,y2
-        ctx.beginPath();
-        ctx.arc(mouse.x2, mouse.y2, mouse.radius, 0, 2 * Math.PI, false);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.moveTo(mouse.x, mouse.y);
-        ctx.lineTo(mouse.x2, mouse.y2);
-        ctx.strokeStyle = '#D55';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      break;
-    }
-  }
-}
-
 /* Renders grid accoding to grid size and camera position and zoom */
 function renderGrid(spacing, color){
   var gridSize = spacing * camera.zoom;
@@ -281,7 +146,6 @@ function renderGrid(spacing, color){
 
 function renderFrame(spacetime){
   clearCanvas();
-  centerCamera();
 
   if (settings.showGrid === true) {
     renderGrid(50, "#EEE");
@@ -290,8 +154,6 @@ function renderFrame(spacetime){
   for (var i = spacetime.length - 1; i >= 0; i--) {
     renderObject(spacetime[i]);
   }
-
-  renderMassBuilder();
 }
 
 // -----------
@@ -328,9 +190,6 @@ export default {
   changeZoom(p_zoom) {
       camera.preferredZoom = parseFloat(p_zoom);
       camera.zoomIT = fps;
-  },
-  setMouse(p_mouse){
-    mouse = p_mouse;
   },
   getCamera(){
     return camera

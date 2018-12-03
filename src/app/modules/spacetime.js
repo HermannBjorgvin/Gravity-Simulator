@@ -7,8 +7,6 @@
     * Spacetime, the Array that contains all the solids
 */
 
-import _ from 'underscore';
-
 class Solid {
   constructor(options = {}){
     // default options
@@ -111,27 +109,20 @@ export default class Spacetime {
       object.deltaVelY = 0;
     }
   }
-
   startLoop(){
     this.spacetimeLoop = setInterval(() => {
-      this.calculateForces();
+      // Calculate gravitational forces between all objects
+      this.calculateObjectForce();
+
+      // Apply delta velocity to all objects
+      this.applyObjectForce();
     }, 1000/this.calculationsPerSec);
   }
-
   getSpace(){
     return this.spacetime;
   }
-
-  calculateForces(){
-    // Calculate gravitational forces between all objects
-    this.calculateObjectForce();
-
-    // Apply delta velocity to all objects
-    this.applyObjectForce();
-  }
-
+  addObject(options){ this.spacetime.push(new Solid(options)); }
   stopLoop(){
     clearInterval(this.spacetimeLoop);
   }
-
 }
