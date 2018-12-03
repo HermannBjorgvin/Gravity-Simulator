@@ -9,8 +9,8 @@ var renderLoop = undefined;
 var fps = 60;
 var massMultiplier = undefined;
 var camera = {
-  x: -300,
-  y: -150,
+  x: 0,
+  y: 0,
   marginX: 0,
   marginY: 0,
   marginZoom: 0,
@@ -38,6 +38,46 @@ function clearCanvas(){
 }
 
 var menuDrawPath = true;
+
+
+var initialMarginX = 0, initialMarginY = 0, initialMarginZoom = 0;
+var offsetX = 0, offsetY = 0, offsetZoom = 0;
+function centerCamera(){
+  var l_spacetime = spacetime.getSpace();
+  for (var i = l_spacetime.length - 1; i >= 0; i--) {
+    var object = l_spacetime[i]
+    if (object.cameraFocus == true) {
+      if(camera.xIT > 0) {
+          if (camera.xIT == fps) {
+              offsetX = camera.preferredX - camera.marginX;
+              initialMarginX = camera.marginX;
+          }
+        camera.xIT -= 1;
+        camera.marginX = initialMarginX + Math.sign(offsetX) * Math.sqrt(Math.pow(offsetX,2) - Math.pow(offsetX * (fps - camera.xIT)/fps - offsetX,2));
+      }
+      else camera.marginX = camera.preferredX;
+      if (camera.yIT > 0) {
+          if (camera.yIT == fps) {
+              offsetY = camera.preferredY - camera.marginY;
+              initialMarginY = camera.marginY;
+          }
+        camera.yIT -= 1;
+        camera.marginY = initialMarginY + Math.sign(offsetY) * Math.sqrt(Math.pow(offsetY,2) - Math.pow(offsetY * (fps - camera.yIT)/fps - offsetY,2));
+      }
+      else camera.marginY = camera.preferredY;
+      if (camera.zoomIT > 0) {
+          if (camera.zoomIT == fps) {
+              offsetZoom = camera.preferredZoom - camera.zoom;
+              initialMarginZoom = camera.zoom;
+          }
+          camera.zoomIT -= 1;
+          camera.zoom = initialMarginZoom + Math.sign(offsetZoom) * Math.sqrt(Math.pow(offsetZoom, 2) - Math.pow(offsetZoom * (fps - camera.zoomIT)/fps - offsetZoom, 2));
+      } else camera.zoom = camera.preferredZoom;
+      camera.x = object.x - canvas.width / 2 / camera.zoom + camera.marginX;
+      camera.y = object.y - canvas.height / 2 / camera.zoom + camera.marginY;
+    }
+  }
+}
 
 function renderObject(object){
   // --------------------
@@ -146,6 +186,7 @@ function renderGrid(spacing, color){
 
 function renderFrame(spacetime){
   clearCanvas();
+  centerCamera();
 
   if (settings.showGrid === true) {
     renderGrid(50, "#EEE");
@@ -193,6 +234,11 @@ export default {
   },
   getCamera(){
     return camera
+  },
+  updateCamera(x, y, zoom = 1){
+    camera.preferredX = - x + canvas.width/2;
+    camera.preferredY = - y + canvas.height/2;
+    camera.preferredZoom = zoom;
   },
   setDrawPath (value) {
       menuDrawPath = value;

@@ -16,11 +16,21 @@ app.start = function(el, opts = {}){
     massMultiplier: 40
   }, opts);
 
-  let hammer = new Hammer(el);
+  let mc = new Hammer.Manager(el, {});
+  mc.add( new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }) );
 
-  hammer.get('pinch').set({
-    enable: true
+  mc.on('panmove', function(e){
+    // console.log('panning!')
+
+    let dX = e.deltaX;
+    let dY = e.deltaY;
+
+    let cX = e.center.x;
+    let cY = e.center.y;
+
+    render.updateCamera(cX, cY, 1);
   });
+
 
 	// Initialize the canvas utility, includes features such as autoresize
 	canvasUtil.autoResize(canvas);
