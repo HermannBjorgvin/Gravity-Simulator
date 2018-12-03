@@ -2,28 +2,26 @@
 
 import canvasUtil from './utility/canvasUtil';
 import render from './modules/render';
-import spacetime from './modules/spacetime';
-import gui from './modules/gui';
+import Spacetime from './modules/spacetime';
 
 var app = {};
 
-app.start = function(el){
+app.start = function(el, opts = {}){
 	var canvas = el;
-	var massMultiplier = 200;
+
+  let options = Object.assign({
+    // Put default options here
+    massMultiplier: 40
+  }, opts);
 
 	// Initialize the canvas utility, includes features such as autoresize
-	canvasUtil.initialize(canvas);
-	canvasUtil.autoResize();
+	canvasUtil.autoResize(canvas);
 
 	// Initialize spacetime simulation
-	spacetime.initialize(massMultiplier);
+	let spacetime = new Spacetime(options);
 
 	// Initialize render module
-	render.initialize(canvas, spacetime, massMultiplier);
-
-	// Initialize GUI
-	gui.initialize(spacetime, render, canvas, massMultiplier);
-
+	render.initialize(el, spacetime, options);
 	// Solar system
 	(function solarSystem(){
 		// star
@@ -108,6 +106,8 @@ app.start = function(el){
 			});
 		}
 	})();
+
+  return this;
 }
 
 export default app;

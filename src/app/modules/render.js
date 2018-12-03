@@ -19,12 +19,12 @@ var camera = {
   marginZoom:0,
   preferredX:0,
   preferredY:0,
-  preferredZoom:0,
+  preferredZoom:parseFloat(1),
   drag:50,
-  xIT:0,
-  yIT:0,
-  zoomIT:0,
-  zoom: 0,
+  xIT: fps,
+  yIT: fps,
+  zoomIT: fps,
+  zoom: 1,
   locked: true,
   getX(p_x){ return (p_x*this.zoom - this.x*this.zoom) },
   getY(p_y){ return (p_y*this.zoom - this.y*this.zoom) },
@@ -299,17 +299,15 @@ function renderFrame(spacetime){
 // -----------
 
 export default {
-  initialize(p_canvas, p_spacetime, p_massMultiplier){
-    canvas = p_canvas;
+  initialize(el, p_spacetime, options){
+    canvas = el;
     ctx = canvas.getContext('2d');
     spacetime = p_spacetime;
-    massMultiplier = p_massMultiplier;
+    massMultiplier = options.massMultiplier;
+    this.changeZoom(options.zoom);
 
     // Disable canvas context menu
     $('body').on('contextmenu', canvas, function(){ return false; });
-
-    // WASD camera movement
-    document.addEventListener('keypress', moveCamera);
 
     this.startLoop();
   },

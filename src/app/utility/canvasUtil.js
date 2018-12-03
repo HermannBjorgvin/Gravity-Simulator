@@ -1,20 +1,17 @@
 // canvas utility for various tasks I tend to do often
-let canvas = undefined;
 
-function resizeHandler(){
+function resizeHandler(canvas){
   canvas.height = canvas.offsetHeight;
   canvas.width = canvas.offsetWidth;
 }
 
 let api = {
-  initialize: function(p_canvas) {
-    canvas = p_canvas;
-  },
-  autoResize: function() {
+  autoResize: function(p_canvas) {
+    let canvas = p_canvas;
     window.onresize = function(){
-      resizeHandler();
+      resizeHandler(canvas);
     };
-    resizeHandler();
+    resizeHandler(canvas);
   }
 }
 
