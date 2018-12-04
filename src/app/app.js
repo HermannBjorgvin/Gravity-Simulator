@@ -16,21 +16,18 @@ app.start = function(el, opts = {}){
     massMultiplier: 40
   }, opts);
 
-  let mc = new Hammer.Manager(el, {});
-  mc.add( new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 }) );
+  // Create a new hammertime instance
+  let mc = new Hammer(el, {});
 
-  mc.on('panmove', function(e){
-    // console.log('panning!')
+  // Enable the pinch recognizer
+  mc.get('pinch').set({ enable: true });
 
-    let dX = e.deltaX;
-    let dY = e.deltaY;
+  let pan = new Hammer.Pan({ direction: Hammer.DIRECTION_ALL, threshold: 0 });
+  let pinch = new Hammer.Pinch();
 
-    let cX = e.center.x;
-    let cY = e.center.y;
+  mc.add([pan, pinch]);
 
-    render.updateCamera(cX, cY, 1);
-  });
-
+  mc.on('pan pinch panend pinchend', render.touchHandler);
 
 	// Initialize the canvas utility, includes features such as autoresize
 	canvasUtil.autoResize(canvas);
@@ -40,6 +37,7 @@ app.start = function(el, opts = {}){
 
 	// Initialize render module
 	render.initialize(el, spacetime, options);
+
 	// Solar system
 	(function solarSystem(){
 		// star
